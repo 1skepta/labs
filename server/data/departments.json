@@ -2,5 +2,9 @@
   {
     "id": 1,
     "name": "Hematology"
+  },
+  {
+    "id": 2,
+    "name": "Biopsy"
   }
 ]
