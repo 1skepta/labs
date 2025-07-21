@@ -1,0 +1,13 @@
+[
+  {
+    "id": 1,
+    "patientId": 1,
+    "testIds": [
+      1,
+      2
+    ],
+    "totalCost": 150,
+    "isPaid": false,
+    "status": "pending"
+  }
+]
