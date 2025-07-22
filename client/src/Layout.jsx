@@ -6,6 +6,8 @@ import Signup from "./pages/Signup";
 import Onboarding from "./pages/Onboarding";
 import Header from "./components/Header";
 import DepartmentForm from "./components/DepartmentForm";
+import SectionForm from "./components/SectionForm";
+import PatientForm from "./components/PatientForm";
 
 export default function Layout() {
   const location = useLocation();
@@ -24,6 +26,8 @@ export default function Layout() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/departments" element={<DepartmentForm />} />
+          <Route path="/sections" element={<SectionForm />} />
+          <Route path="/patients" element={<PatientForm />} />
         </Routes>
       </div>
     </div>
