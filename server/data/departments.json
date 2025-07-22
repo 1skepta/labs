@@ -6,5 +6,9 @@
   {
     "id": 2,
     "name": "Biopsy"
+  },
+  {
+    "id": 3,
+    "name": "Youth Department"
   }
 ]
