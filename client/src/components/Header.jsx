@@ -1,0 +1,14 @@
+import { Link } from "react-router-dom";
+import mobile from "../assets/mobile.jpg";
+
+export default function Header() {
+  return (
+    <div className="relative w-full h-64">
+      <img src={mobile} alt="mobile" className="w-full h-full object-cover" />
+      <div className="absolute bottom-5 left-6 text-white drop-shadow-md">
+        <h1 className="text-3xl font-bold">Hello Paul</h1>
+        <p className="text-base">Welcome To Labs</p>
+      </div>
+    </div>
+  );
+}
