@@ -3,7 +3,6 @@ const path = require("path");
 
 const dataPath = path.join(__dirname, "..", "data", "departments.json");
 
-// Helper: Read departments from file
 function readDepartments() {
   if (!fs.existsSync(dataPath)) {
     fs.writeFileSync(dataPath, "[]"); // create empty file if not exists
@@ -12,12 +11,10 @@ function readDepartments() {
   return JSON.parse(data);
 }
 
-// Helper: Write departments to file
 function writeDepartments(departments) {
   fs.writeFileSync(dataPath, JSON.stringify(departments, null, 2));
 }
 
-// Temporary in-memory ID tracker
 let idCounter = 1;
 
 exports.getDepartments = (req, res) => {
@@ -33,7 +30,6 @@ exports.createDepartment = (req, res) => {
 
   const departments = readDepartments();
 
-  // Generate next ID based on highest current ID in file
   const maxId = departments.reduce((max, dept) => Math.max(max, dept.id), 0);
   const newDept = { id: maxId + 1, name };
 

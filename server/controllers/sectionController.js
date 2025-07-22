@@ -3,7 +3,6 @@ const path = require("path");
 
 const dataPath = path.join(__dirname, "..", "data", "sections.json");
 
-// Read sections from file
 function readSections() {
   if (!fs.existsSync(dataPath)) {
     fs.writeFileSync(dataPath, "[]");
@@ -12,7 +11,6 @@ function readSections() {
   return JSON.parse(data);
 }
 
-// Write sections to file
 function writeSections(sections) {
   fs.writeFileSync(dataPath, JSON.stringify(sections, null, 2));
 }
@@ -33,7 +31,6 @@ exports.createSection = (req, res) => {
 
   const sections = readSections();
 
-  // Auto-generate ID based on max existing
   const maxId = sections.reduce((max, s) => Math.max(max, s.id), 0);
   const newSection = {
     id: maxId + 1,

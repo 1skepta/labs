@@ -4,17 +4,40 @@ import API from "../utils/api";
 export default function DepartmentForm() {
   const [name, setName] = useState("");
   const [departments, setDepartments] = useState([]);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const fetchDepartments = async () => {
-    const res = await API.get("/departments");
-    setDepartments(res.data);
+    try {
+      const res = await API.get("/departments");
+      setDepartments(res.data);
+    } catch (err) {
+      console.error("Error fetching departments", err);
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await API.post("/departments", { name });
-    setName("");
-    fetchDepartments();
+    setMessage("");
+    setError("");
+
+    if (!name.trim()) {
+      setError("Department name is required");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await API.post("/departments", { name });
+      setMessage("Department created successfully ✅");
+      setName("");
+      fetchDepartments();
+    } catch (err) {
+      setError("Something went wrong while creating department");
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -22,7 +45,7 @@ export default function DepartmentForm() {
   }, []);
 
   return (
-    <div className="flex flex-col justify-center p-4 bg-gray-50">
+    <div className="flex flex-col justify-center p-4 bg-gray-50 ">
       <div className="max-w-md w-full mx-auto">
         <h1 className="font-black text-3xl mb-3">Create Department</h1>
         <p className="text-gray-600 mb-6 text-base">
@@ -30,33 +53,38 @@ export default function DepartmentForm() {
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="relative">
-            <input
-              type="text"
-              id="departmentName"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="peer w-full border rounded-lg py-4 pt-4 px-4 text-lg placeholder-transparent focus:outline-none focus:ring-2 focus:ring-[#0030f1]"
-              placeholder="Department Name"
-            />
-            <label
-              htmlFor="departmentName"
-              className="absolute left-4 top-3.5 text-gray-400 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-2 peer-focus:text-sm peer-focus:text-[#0030f1]"
-            >
-              Department Name
-            </label>
-          </div>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Department Name"
+            className="w-full border rounded-lg py-4 px-4 text-lg focus:outline-none focus:ring-2 focus:ring-[#0030f1]"
+          />
 
           <button
             type="submit"
-            className="w-full bg-[#0030f1] text-white rounded-lg py-4 text-lg font-semibold hover:bg-blue-800 transition"
+            disabled={loading}
+            className={`w-full rounded-lg py-4 text-lg font-semibold transition ${
+              loading
+                ? "bg-blue-300 text-white cursor-not-allowed"
+                : "bg-[#0030f1] text-white hover:bg-blue-800"
+            }`}
           >
-            Create Department
+            {loading ? "Creating..." : "Create Department"}
           </button>
         </form>
 
+        {message && (
+          <div className="mt-4 text-green-600 text-sm font-medium">
+            {message}
+          </div>
+        )}
+        {error && (
+          <div className="mt-4 text-red-500 text-sm font-medium">{error}</div>
+        )}
+
         {departments.length > 0 && (
-          <div className="mt-8">
+          <div className="mt-10">
             <h2 className="text-lg font-semibold text-gray-800 mb-2">
               Existing Departments
             </h2>

@@ -3,26 +3,63 @@ import API from "../utils/api";
 
 export default function SectionForm() {
   const [name, setName] = useState("");
+  const [departmentId, setDepartmentId] = useState("");
   const [sections, setSections] = useState([]);
+  const [departments, setDepartments] = useState([]);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const fetchSections = async () => {
-    const res = await API.get("/sections");
-    setSections(res.data);
+    try {
+      const res = await API.get("/sections");
+      setSections(res.data);
+    } catch (err) {
+      console.error("Error fetching sections", err);
+    }
+  };
+
+  const fetchDepartments = async () => {
+    try {
+      const res = await API.get("/departments");
+      setDepartments(res.data);
+    } catch (err) {
+      console.error("Error fetching departments", err);
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await API.post("/sections", { name });
-    setName("");
-    fetchSections();
+    setError("");
+    setMessage("");
+
+    if (!name.trim() || !departmentId) {
+      setError("Section name and department are required.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await API.post("/sections", { name, departmentId });
+      setMessage("Section created successfully ✅");
+      setName("");
+      setDepartmentId("");
+      fetchSections();
+    } catch (err) {
+      console.error(err);
+      setError("Failed to create section");
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     fetchSections();
+    fetchDepartments();
   }, []);
 
   return (
-    <div className="flex flex-col justify-center p-4 bg-gray-50">
+    <div className="flex flex-col justify-center p-4 bg-gray-50 ">
       <div className="max-w-md w-full mx-auto">
         <h1 className="font-black text-3xl mb-3">Create Section</h1>
         <p className="text-gray-600 mb-6 text-base">
@@ -30,30 +67,48 @@ export default function SectionForm() {
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="relative">
-            <input
-              type="text"
-              id="sectionName"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="peer w-full border rounded-lg py-4 px-4 text-lg placeholder-transparent focus:outline-none focus:ring-2 focus:ring-[#0030f1]"
-              placeholder="Section Name"
-            />
-            <label
-              htmlFor="sectionName"
-              className="absolute left-4 top-3.5 text-gray-400 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-2 peer-focus:text-sm peer-focus:text-[#0030f1]"
-            >
-              Section Name
-            </label>
-          </div>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Section Name"
+            className="w-full border rounded-lg py-4 px-4 text-lg focus:outline-none focus:ring-2 focus:ring-[#0030f1]"
+          />
+
+          <select
+            value={departmentId}
+            onChange={(e) => setDepartmentId(e.target.value)}
+            className="w-full border rounded-lg py-4 px-4 text-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#0030f1]"
+          >
+            <option value="">Select Department</option>
+            {departments.map((dept) => (
+              <option key={dept.id} value={dept.id}>
+                {dept.name}
+              </option>
+            ))}
+          </select>
 
           <button
             type="submit"
-            className="w-full bg-[#0030f1] text-white rounded-lg py-4 text-lg font-semibold hover:bg-blue-800 transition"
+            disabled={loading}
+            className={`w-full rounded-lg py-4 text-lg font-semibold transition ${
+              loading
+                ? "bg-blue-300 text-white cursor-not-allowed"
+                : "bg-[#0030f1] text-white hover:bg-blue-800"
+            }`}
           >
-            Create Section
+            {loading ? "Creating..." : "Create Section"}
           </button>
         </form>
+
+        {message && (
+          <div className="mt-4 text-green-600 text-sm font-medium">
+            {message}
+          </div>
+        )}
+        {error && (
+          <div className="mt-4 text-red-500 text-sm font-medium">{error}</div>
+        )}
 
         {sections.length > 0 && (
           <div className="mt-8">

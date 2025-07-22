@@ -5,5 +5,12 @@
     "dob": "2022-06-22",
     "gender": "Male",
     "phone": "0594760444"
+  },
+  {
+    "id": 2,
+    "name": "Kwao ",
+    "dob": "2025-07-20",
+    "gender": "Female",
+    "phone": "1123"
   }
 ]

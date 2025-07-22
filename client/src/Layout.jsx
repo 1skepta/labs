@@ -8,6 +8,7 @@ import Header from "./components/Header";
 import DepartmentForm from "./components/DepartmentForm";
 import SectionForm from "./components/SectionForm";
 import PatientForm from "./components/PatientForm";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function Layout() {
   const location = useLocation();
@@ -21,13 +22,50 @@ export default function Layout() {
       <div className="p-6">
         <Routes>
           <Route path="/" element={<Onboarding />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/requests" element={<LabRequests />} />
+
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/requests"
+            element={
+              <ProtectedRoute>
+                <LabRequests />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/departments"
+            element={
+              <ProtectedRoute>
+                <DepartmentForm />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/sections"
+            element={
+              <ProtectedRoute>
+                <SectionForm />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/patients"
+            element={
+              <ProtectedRoute>
+                <PatientForm />
+              </ProtectedRoute>
+            }
+          />
+
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/departments" element={<DepartmentForm />} />
-          <Route path="/sections" element={<SectionForm />} />
-          <Route path="/patients" element={<PatientForm />} />
         </Routes>
       </div>
     </div>
