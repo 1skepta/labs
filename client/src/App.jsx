@@ -13,7 +13,7 @@ import Onboarding from "./pages/Onboarding";
 
 function Layout() {
   const location = useLocation();
-  const hideHeader = ["/login", "/signup", "/onboarding"].includes(
+  const hideHeader = ["/login", "/signup", "/onboarding", "/"].includes(
     location.pathname
   );
 
@@ -27,11 +27,12 @@ function Layout() {
       )}
       <div className="">
         <Routes>
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/" element={<Onboarding />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/requests" element={<LabRequests />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/onboarding" element={<Onboarding />} />
+          {/* <Route path="/onboarding" element={<Onboarding />} /> */}
         </Routes>
       </div>
     </div>
