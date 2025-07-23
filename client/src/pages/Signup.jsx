@@ -91,7 +91,7 @@ export default function Signup() {
             <button
               type="button"
               onClick={() => setShowPass(!showPass)}
-              className="absolute right-4 top-4 text-gray-400 hover:text-gray-600"
+              className="absolute right-4 top-4 text-gray-400 hover:text-gray-600 cursor-pointer"
             >
               {showPass ? "🙈" : "👁️"}
             </button>
@@ -99,7 +99,7 @@ export default function Signup() {
 
           <button
             type="submit"
-            className="w-full bg-[#0030f1] text-white rounded-lg py-4 text-lg font-semibold hover:bg-blue-800 transition"
+            className="cursor-pointer w-full bg-[#0030f1] text-white rounded-lg py-4 text-lg font-semibold hover:bg-blue-800 transition"
           >
             Create Account
           </button>
