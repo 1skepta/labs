@@ -6,10 +6,12 @@ import patient from "../assets/patient.png";
 import section from "../assets/sections.png";
 import test from "../assets/test.png";
 import upload from "../assets/upload.png";
+import labs from "../assets/labs.png";
 
 const cards = [
   { title: "Create Department", icon: department, route: "/departments" },
   { title: "Create Sections", icon: section, route: "/sections" },
+  { title: "Lab Test Setup", icon: labs, route: "/lab-tests" },
   { title: "Add a Patient", icon: patient, route: "/patients" },
   { title: "New Lab Request", icon: test, route: "/lab-request" },
   { title: "Upload Test Results", icon: upload, route: "/upload-results" },
