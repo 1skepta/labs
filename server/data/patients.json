@@ -12,5 +12,12 @@
     "dob": "2025-07-20",
     "gender": "Female",
     "phone": "1123"
+  },
+  {
+    "id": 3,
+    "name": "James",
+    "dob": "2001-02-01",
+    "gender": "Female",
+    "phone": "171"
   }
 ]

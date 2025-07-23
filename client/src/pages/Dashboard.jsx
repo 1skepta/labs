@@ -19,25 +19,29 @@ export default function Dashboard() {
   const navigate = useNavigate();
 
   return (
-    <div className="p-4">
+    <div className="p-4 max-w-screen-lg mx-auto relative">
       <h1 className="font-extrabold text-2xl mb-4">How can we help you?</h1>
 
-      <div className="flex gap-4 overflow-x-auto scrollbar-hide -mx-2 px-2 pb-4">
-        {cards.map((card, index) => (
-          <div
-            key={index}
-            onClick={() => navigate(card.route)}
-            className="cursor-pointer flex-shrink-0 w-48 h-36 bg-white rounded-2xl shadow-md border border-gray-200 p-4 flex flex-col items-center justify-between transition hover:shadow-lg"
-          >
-            <div className="w-full flex items-center justify-between">
-              <img src={card.icon} alt={card.title} className="w-12 h-12" />
-              <ChevronRight className="text-[#0030f1]" />
+      <div className="relative">
+        <div className="flex gap-6 overflow-x-auto scrollbar-hide -mx-2 px-2 pb-4">
+          {cards.map((card, index) => (
+            <div
+              key={index}
+              onClick={() => navigate(card.route)}
+              className="cursor-pointer flex-shrink-0 w-52 h-36 bg-white rounded-2xl shadow-md border border-gray-200 p-4 flex flex-col items-center justify-between transition hover:shadow-lg"
+            >
+              <div className="w-full flex items-center justify-between">
+                <img src={card.icon} alt={card.title} className="w-12 h-12" />
+                <ChevronRight className="text-[#0030f1]" />
+              </div>
+              <p className="text-[#0030f1] font-semibold text-sm text-center mt-3">
+                {card.title}
+              </p>
             </div>
-            <p className="text-[#0030f1] font-semibold text-sm text-center mt-3">
-              {card.title}
-            </p>
-          </div>
-        ))}
+          ))}
+        </div>
+
+        <div className="pointer-events-none absolute top-0 right-0 h-full w-12 bg-gradient-to-l from-white to-transparent" />
       </div>
     </div>
   );

@@ -3,5 +3,10 @@
     "id": 1,
     "name": "Racism ",
     "departmentId": 2
+  },
+  {
+    "id": 2,
+    "name": "Chair",
+    "departmentId": 5
   }
 ]

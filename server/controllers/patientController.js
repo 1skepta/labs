@@ -3,7 +3,6 @@ const path = require("path");
 
 const dataPath = path.join(__dirname, "..", "data", "patients.json");
 
-// Read patients from file
 function readPatients() {
   if (!fs.existsSync(dataPath)) {
     fs.writeFileSync(dataPath, "[]");
@@ -12,7 +11,6 @@ function readPatients() {
   return JSON.parse(data);
 }
 
-// Write patients to file
 function writePatients(patients) {
   fs.writeFileSync(dataPath, JSON.stringify(patients, null, 2));
 }
@@ -31,7 +29,6 @@ exports.createPatient = (req, res) => {
 
   const patients = readPatients();
 
-  // Generate new ID
   const maxId = patients.reduce((max, p) => Math.max(max, p.id), 0);
   const newPatient = {
     id: maxId + 1,

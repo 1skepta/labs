@@ -5,10 +5,10 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Onboarding from "./pages/Onboarding";
 import Header from "./components/Header";
-import DepartmentForm from "./components/DepartmentForm";
-import SectionForm from "./components/SectionForm";
-import PatientForm from "./components/PatientForm";
-import ProtectedRoute from "./components/ProtectedRoute";
+import DepartmentForm from "./pages/DepartmentForm";
+import SectionForm from "./pages/SectionForm";
+import PatientForm from "./pages/PatientForm";
+import ProtectedRoute from "./utils/ProtectedRoute";
 
 export default function Layout() {
   const location = useLocation();
