@@ -10,6 +10,7 @@ import SectionForm from "./pages/SectionForm";
 import PatientForm from "./pages/PatientForm";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import LabTestForm from "./pages/LabTestsForm";
+import AllLabRequests from "./pages/AllLabRequests";
 
 export default function Layout() {
   const location = useLocation();
@@ -37,6 +38,14 @@ export default function Layout() {
             element={
               <ProtectedRoute>
                 <LabRequests />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/all-lab-requests"
+            element={
+              <ProtectedRoute>
+                <AllLabRequests />
               </ProtectedRoute>
             }
           />

@@ -1,106 +1,231 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import API from "../utils/api";
 
-export default function LabRequests() {
-  const [patientId, setPatientId] = useState("");
-  const [testIds, setTestIds] = useState([]);
+export default function LabRequestForm() {
   const [patients, setPatients] = useState([]);
   const [tests, setTests] = useState([]);
   const [requests, setRequests] = useState([]);
 
+  const [selectedPatient, setSelectedPatient] = useState("");
+  const [selectedTests, setSelectedTests] = useState([]);
+
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
-    API.get("/patients").then((res) => setPatients(res.data));
-    API.get("/lab-tests").then((res) => setTests(res.data));
+    fetchPatients();
+    fetchTests();
     fetchRequests();
   }, []);
 
+  const fetchPatients = async () => {
+    try {
+      const res = await API.get("/patients");
+      setPatients(res.data);
+    } catch (err) {
+      console.error("Error loading patients", err);
+    }
+  };
+
+  const fetchTests = async () => {
+    try {
+      const res = await API.get("/lab-tests");
+      setTests(res.data);
+    } catch (err) {
+      console.error("Error loading tests", err);
+    }
+  };
+
   const fetchRequests = async () => {
-    const res = await API.get("/lab-requests");
-    setRequests(res.data);
+    try {
+      const res = await API.get("/lab-requests");
+      setRequests(res.data);
+    } catch (err) {
+      console.error("Error loading requests", err);
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await API.post("/lab-requests", {
-      patientId: parseInt(patientId),
-      testIds,
+    setMessage("");
+    setError("");
+
+    if (!selectedPatient || selectedTests.length === 0) {
+      setError("Please select a patient and at least one test.");
+      return;
+    }
+
+    const patientObj = patients.find((p) => p.name === selectedPatient);
+    const testIds = selectedTests.map((name) => {
+      const test = tests.find((t) => t.name === name);
+      return test?.id;
     });
-    fetchRequests();
+
+    if (!patientObj || testIds.includes(undefined)) {
+      setError("Invalid patient or test selection.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await API.post("/lab-requests", {
+        patientId: patientObj.id,
+        testIds,
+      });
+
+      setMessage("Lab request submitted");
+      setSelectedPatient("");
+      setSelectedTests([]);
+      fetchRequests();
+    } catch (err) {
+      console.error(err);
+      setError("Failed to submit request.");
+    } finally {
+      setLoading(false);
+      setTimeout(() => {
+        setMessage("");
+        setError("");
+      }, 4000);
+    }
   };
 
-  const payNow = async (id) => {
-    await API.patch(`/lab-requests/${id}/pay`);
-    fetchRequests();
-  };
+  const calculateTotal = () =>
+    selectedTests.reduce((total, name) => {
+      const test = tests.find((t) => t.name === name);
+      return test ? total + test.cost : total;
+    }, 0);
 
   return (
-    <div className="grid gap-6">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-4 rounded shadow space-y-3"
-      >
-        <h2 className="text-lg font-bold">New Lab Request</h2>
+    <div className="p-4 bg-gray-50 min-h-screen">
+      <div className="max-w-screen-lg mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
+        <div>
+          <h1 className="font-bold text-2xl mb-3">Lab Request Form</h1>
+          <p className="text-gray-600 mb-4">Create a new lab test request.</p>
 
-        <select
-          className="border p-2 w-full rounded"
-          value={patientId}
-          onChange={(e) => setPatientId(e.target.value)}
-        >
-          <option value="">Select Patient</option>
-          {patients.map((p) => (
-            <option key={p.id} value={p.id}>
-              {p.name}
-            </option>
-          ))}
-        </select>
+          {message && (
+            <div className="bg-green-100 text-green-800 px-4 py-3 rounded mb-4 text-sm">
+              {message}
+            </div>
+          )}
+          {error && (
+            <div className="bg-red-100 text-red-800 px-4 py-3 rounded mb-4 text-sm">
+              {error}
+            </div>
+          )}
 
-        <div className="grid grid-cols-2 gap-2">
-          {tests.map((t) => (
-            <label key={t.id} className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                value={t.id}
-                onChange={(e) => {
-                  const val = parseInt(e.target.value);
-                  setTestIds((prev) =>
-                    prev.includes(val)
-                      ? prev.filter((id) => id !== val)
-                      : [...prev, val]
-                  );
-                }}
-              />
-              {t.name} (${t.cost})
-            </label>
-          ))}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <select
+              value={selectedPatient}
+              onChange={(e) => setSelectedPatient(e.target.value)}
+              className="w-full border rounded-lg py-3 px-4 text-lg text-gray-700 cursor-pointer"
+            >
+              <option value="">Select Patient</option>
+              {patients.map((p) => (
+                <option key={p.id} value={p.name}>
+                  {p.name}
+                </option>
+              ))}
+            </select>
+
+            <div className="space-y-2 max-h-48 overflow-y-auto border rounded-lg p-3 bg-white">
+              {tests.map((t) => (
+                <label
+                  key={t.id}
+                  className="flex items-center justify-between gap-2 cursor-pointer hover:bg-gray-50 px-2 py-1 rounded"
+                >
+                  <input
+                    type="checkbox"
+                    value={t.name}
+                    checked={selectedTests.includes(t.name)}
+                    onChange={(e) => {
+                      const checked = e.target.checked;
+                      setSelectedTests((prev) =>
+                        checked
+                          ? [...prev, t.name]
+                          : prev.filter((name) => name !== t.name)
+                      );
+                    }}
+                    className="mr-2"
+                  />
+                  <span className="flex-1">{t.name}</span>
+                  <span className="text-gray-500 text-sm">₵{t.cost}</span>
+                </label>
+              ))}
+            </div>
+
+            <div className="text-lg font-medium text-gray-800">
+              Total: ₵{calculateTotal().toFixed(2)}
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className={`cursor-pointer w-full py-3 rounded-lg font-semibold text-white text-lg ${
+                loading
+                  ? "bg-blue-300 cursor-not-allowed"
+                  : "bg-[#0030f1] hover:bg-blue-800"
+              }`}
+            >
+              {loading ? "Submitting..." : "Submit Request"}
+            </button>
+          </form>
         </div>
 
-        <button className="bg-blue-600 text-white px-4 py-2 rounded">
-          Submit Request
-        </button>
-      </form>
+        <div>
+          <h2 className="text-lg font-semibold mb-4 text-gray-800">
+            Recent Requests
+          </h2>
 
-      <div className="bg-white p-4 rounded shadow">
-        <h2 className="font-bold mb-2">Requests</h2>
-        <ul>
-          {requests.map((r) => (
-            <li
-              key={r.id}
-              className="border-b py-2 flex justify-between items-center"
+          {requests.length === 0 ? (
+            <p className="text-gray-500 text-sm">No requests yet.</p>
+          ) : (
+            <ul className="space-y-3 text-sm">
+              {requests
+                .slice(-3)
+                .reverse()
+                .map((r) => {
+                  const patient = patients.find((p) => p.id === r.patientId);
+
+                  return (
+                    <li
+                      key={r.id}
+                      className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm"
+                    >
+                      <div className="font-semibold text-gray-800">
+                        👤 {patient?.name || "Unknown Patient"}
+                      </div>
+                      <div className="text-gray-600 text-sm mt-1">
+                        🧪 Tests: {r.testIds.length}
+                      </div>
+                      <div className="text-gray-600 text-sm">
+                        💰 Total: ₵{r.totalCost.toFixed(2)}
+                      </div>
+                      <div
+                        className={`inline-block mt-1 px-2 py-0.5 text-xs rounded ${
+                          r.isPaid
+                            ? "bg-green-100 text-green-700"
+                            : "bg-yellow-100 text-yellow-700"
+                        }`}
+                      >
+                        {r.isPaid ? "✅ Paid" : "⏳ Pending"}
+                      </div>
+                    </li>
+                  );
+                })}
+            </ul>
+          )}
+
+          <div className="mt-6 text-center">
+            <Link
+              to="/all-lab-requests"
+              className="text-blue-600 text-sm font-medium underline"
             >
-              <span>
-                Request #{r.id} – {r.status} – ${r.totalCost}
-              </span>
-              {!r.isPaid && (
-                <button
-                  onClick={() => payNow(r.id)}
-                  className="bg-green-600 text-white px-3 py-1 rounded"
-                >
-                  Pay
-                </button>
-              )}
-            </li>
-          ))}
-        </ul>
+              View All Requests →
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );

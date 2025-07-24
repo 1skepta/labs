@@ -1,11 +1,9 @@
 const fs = require("fs");
 const path = require("path");
 
-// Paths
 const requestsPath = path.join(__dirname, "..", "data", "labRequests.json");
 const testsPath = path.join(__dirname, "..", "data", "labTests.json");
 
-// File helpers
 function readRequests() {
   if (!fs.existsSync(requestsPath)) fs.writeFileSync(requestsPath, "[]");
   return JSON.parse(fs.readFileSync(requestsPath, "utf-8"));
@@ -69,6 +67,7 @@ exports.createRequest = (req, res) => {
     totalCost: total,
     isPaid: false,
     status: "pending",
+    createdAt: new Date().toISOString(),
   };
 
   requests.push(newRequest);

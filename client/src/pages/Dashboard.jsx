@@ -13,7 +13,7 @@ const cards = [
   { title: "Create Sections", icon: section, route: "/sections" },
   { title: "Lab Test Setup", icon: labs, route: "/lab-tests" },
   { title: "Add a Patient", icon: patient, route: "/patients" },
-  { title: "New Lab Request", icon: test, route: "/lab-request" },
+  { title: "New Lab Request", icon: test, route: "/requests" },
   { title: "Upload Test Results", icon: upload, route: "/upload-results" },
 ];
 

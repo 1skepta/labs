@@ -10,6 +10,6 @@ const {
 router.get("/", getRequests);
 router.get("/:id", getRequestById);
 router.post("/", createRequest);
-router.put("/:id/pay", markAsPaid);
+router.patch("/:id/pay", markAsPaid);
 
 module.exports = router;

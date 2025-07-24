@@ -136,7 +136,7 @@ export default function LabTestForm() {
             <select
               value={sectionId}
               onChange={(e) => setSectionId(e.target.value)}
-              className="w-full border rounded-lg py-4 px-4 text-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#0030f1]"
+              className="w-full border rounded-lg py-4 px-4 text-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#0030f1] cursor-pointer"
             >
               <option value="">Select Section</option>
               {sections.map((s) => (
@@ -160,7 +160,6 @@ export default function LabTestForm() {
           </form>
         </div>
 
-        {/* LIST SIDE */}
         <div ref={containerRef}>
           <h2 className="text-lg font-semibold text-gray-800 mb-3">
             Existing Lab Tests
@@ -177,9 +176,7 @@ export default function LabTestForm() {
                     key={t.id}
                     className="relative w-full overflow-hidden rounded-xl"
                   >
-                    {/* Wrapper to control swipe */}
                     <div className="relative w-full h-full">
-                      {/* Actual row content */}
                       <div
                         className={`flex transition-transform duration-300 ${
                           isExpanded ? "-translate-x-16" : "translate-x-0"
@@ -204,7 +201,6 @@ export default function LabTestForm() {
                         </li>
                       </div>
 
-                      {/* Hidden delete zone (positioned behind) */}
                       <button
                         onClick={() => handleDelete(t.id)}
                         className="absolute top-0 right-0 h-full w-16 bg-red-100 text-red-600 flex items-center justify-center hover:bg-red-200 transition"
