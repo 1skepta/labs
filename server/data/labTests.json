@@ -10,5 +10,19 @@
     "name": "Urine Test",
     "cost": 50,
     "sectionId": 2
+  },
+  {
+    "id": 3,
+    "name": "Sugar Level",
+    "cost": 700,
+    "sectionId": 1,
+    "resultFields": [
+      {
+        "label": "Hemoglobin",
+        "unit": "g/dL",
+        "referenceRange": "17 -54",
+        "type": "number"
+      }
+    ]
   }
 ]

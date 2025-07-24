@@ -9,6 +9,7 @@ export default function LabTestForm() {
   const [sectionId, setSectionId] = useState("");
   const [sections, setSections] = useState([]);
   const [tests, setTests] = useState([]);
+  const [resultFields, setResultFields] = useState([]);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -61,10 +62,17 @@ export default function LabTestForm() {
 
     setLoading(true);
     try {
-      await API.post("/lab-tests", { name, cost, sectionId });
+      await API.post("/lab-tests", {
+        name,
+        cost,
+        sectionId,
+        resultFields,
+      });
+
       setName("");
       setCost("");
       setSectionId("");
+      setResultFields([]);
       setMessage("Lab test added successfully");
       fetchTests();
     } catch (err) {
@@ -94,14 +102,33 @@ export default function LabTestForm() {
     return section ? section.name : "Unknown Section";
   };
 
+  const addField = () => {
+    setResultFields([
+      ...resultFields,
+      { label: "", unit: "", referenceRange: "", type: "" },
+    ]);
+  };
+
+  const updateField = (index, key, value) => {
+    const updated = [...resultFields];
+    updated[index][key] = value;
+    setResultFields(updated);
+  };
+
+  const removeField = (index) => {
+    const updated = [...resultFields];
+    updated.splice(index, 1);
+    setResultFields(updated);
+  };
+
   return (
     <div className="p-4 bg-gray-50">
       <div className="max-w-screen-lg mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
-        {/* FORM SIDE */}
         <div>
           <h1 className="font-black text-3xl mb-3">Lab Test Setup</h1>
           <p className="text-gray-600 mb-6 text-base">
-            Add individual lab tests under each section with a cost.
+            Add individual lab tests under each section with cost and optional
+            result fields.
           </p>
 
           {message && (
@@ -121,7 +148,7 @@ export default function LabTestForm() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Test Name"
-              className="w-full border rounded-lg py-4 px-4 text-lg focus:outline-none focus:ring-2 focus:ring-[#0030f1]"
+              className="w-full border rounded-lg py-4 px-4 text-lg"
             />
 
             <input
@@ -130,13 +157,13 @@ export default function LabTestForm() {
               value={cost}
               onChange={(e) => setCost(e.target.value)}
               placeholder="Cost (₵)"
-              className="w-full border rounded-lg py-4 px-4 text-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#0030f1]"
+              className="w-full border rounded-lg py-4 px-4 text-lg"
             />
 
             <select
               value={sectionId}
               onChange={(e) => setSectionId(e.target.value)}
-              className="w-full border rounded-lg py-4 px-4 text-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#0030f1] cursor-pointer"
+              className="w-full border rounded-lg py-4 px-4 text-lg"
             >
               <option value="">Select Section</option>
               {sections.map((s) => (
@@ -145,6 +172,88 @@ export default function LabTestForm() {
                 </option>
               ))}
             </select>
+
+            <div className="space-y-3 mt-6">
+              <h3 className="font-semibold text-base">Define Result Fields</h3>
+
+              {resultFields.map((field, index) => (
+                <div
+                  key={index}
+                  className="border p-4 rounded-md space-y-2 bg-white"
+                >
+                  <input
+                    type="text"
+                    placeholder="Field Label (e.g., Hemoglobin)"
+                    value={field.label}
+                    onChange={(e) =>
+                      updateField(index, "label", e.target.value)
+                    }
+                    className="w-full border rounded px-3 py-2"
+                  />
+
+                  <input
+                    type="text"
+                    placeholder="Unit (e.g., g/dL)"
+                    value={field.unit}
+                    onChange={(e) => updateField(index, "unit", e.target.value)}
+                    className="w-full border rounded px-3 py-2"
+                  />
+
+                  <input
+                    type="text"
+                    placeholder="Reference Range (e.g., 13.5 - 17.5)"
+                    value={field.referenceRange}
+                    onChange={(e) =>
+                      updateField(index, "referenceRange", e.target.value)
+                    }
+                    className="w-full border rounded px-3 py-2"
+                  />
+
+                  <select
+                    value={field.type}
+                    onChange={(e) => updateField(index, "type", e.target.value)}
+                    className="w-full border rounded px-3 py-2"
+                  >
+                    <option value="">Select Field Type</option>
+                    <option value="number">Number</option>
+                    <option value="text">Text</option>
+                    <option value="select">Select (Dropdown)</option>
+                  </select>
+
+                  {field.type === "select" && (
+                    <input
+                      type="text"
+                      placeholder="Options (comma separated)"
+                      value={field.options?.join(",") || ""}
+                      onChange={(e) =>
+                        updateField(
+                          index,
+                          "options",
+                          e.target.value.split(",").map((o) => o.trim())
+                        )
+                      }
+                      className="w-full border rounded px-3 py-2"
+                    />
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={() => removeField(index)}
+                    className="text-sm text-red-500 hover:underline"
+                  >
+                    Remove Field
+                  </button>
+                </div>
+              ))}
+
+              <button
+                type="button"
+                onClick={addField}
+                className="text-blue-600 text-sm hover:underline"
+              >
+                + Add Result Field
+              </button>
+            </div>
 
             <button
               type="submit"

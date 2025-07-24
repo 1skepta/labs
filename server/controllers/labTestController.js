@@ -3,7 +3,6 @@ const path = require("path");
 
 const dataPath = path.join(__dirname, "..", "data", "labTests.json");
 
-// Helpers to read and write
 function readTests() {
   if (!fs.existsSync(dataPath)) {
     fs.writeFileSync(dataPath, "[]");
@@ -22,7 +21,7 @@ exports.getTests = (req, res) => {
 };
 
 exports.createTest = (req, res) => {
-  const { name, cost, sectionId } = req.body;
+  const { name, cost, sectionId, resultFields = [] } = req.body;
 
   if (!name || !cost || !sectionId) {
     return res
@@ -38,6 +37,7 @@ exports.createTest = (req, res) => {
     name,
     cost: parseFloat(cost),
     sectionId: parseInt(sectionId),
+    resultFields, // optional structure for result entries
   };
 
   tests.push(newTest);
