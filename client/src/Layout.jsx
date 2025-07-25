@@ -11,6 +11,7 @@ import PatientForm from "./pages/PatientForm";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import LabTestForm from "./pages/LabTestsForm";
 import AllLabRequests from "./pages/AllLabRequests";
+import LabResultEntry from "./pages/LabResults";
 
 export default function Layout() {
   const location = useLocation();
@@ -81,7 +82,14 @@ export default function Layout() {
               </ProtectedRoute>
             }
           />
-
+          <Route
+            path="/lab-results/manual"
+            element={
+              <ProtectedRoute>
+                <LabResultEntry />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
         </Routes>

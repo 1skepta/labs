@@ -20,9 +20,21 @@ export default function Login() {
     e.preventDefault();
     setError("");
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email.trim())) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters long.");
+      return;
+    }
+
     try {
       const res = await API.post("/auth/login", {
-        username: email,
+        username: email.trim(),
         password,
       });
 

@@ -18,8 +18,8 @@
       2
     ],
     "totalCost": 50,
-    "isPaid": false,
-    "status": "pending",
+    "isPaid": true,
+    "status": "active",
     "createdAt": "2025-07-24T09:15:30.699Z"
   },
   {
@@ -32,5 +32,18 @@
     "isPaid": false,
     "status": "pending",
     "createdAt": "2025-07-24T10:01:34.528Z"
+  },
+  {
+    "id": 4,
+    "patientId": 3,
+    "testIds": [
+      3,
+      2,
+      1
+    ],
+    "totalCost": 850,
+    "isPaid": false,
+    "status": "pending",
+    "createdAt": "2025-07-25T18:01:18.654Z"
   }
 ]

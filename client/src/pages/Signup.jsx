@@ -21,11 +21,34 @@ export default function Signup() {
     e.preventDefault();
     setError("");
 
+    const nameRegex = /^[a-zA-Z\s]{2,}$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+    if (!nameRegex.test(name.trim())) {
+      setError(
+        "Please enter a valid full name (only letters and spaces, at least 2 characters)."
+      );
+      return;
+    }
+
+    if (!emailRegex.test(email.trim())) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    if (!passwordRegex.test(password)) {
+      setError(
+        "Password must be at least 8 characters long and include uppercase, lowercase, and a number."
+      );
+      return;
+    }
+
     try {
       const res = await API.post("/auth/register", {
-        username: email,
+        username: email.trim(),
         password,
-        name,
+        name: name.trim(),
       });
 
       if (res.status === 201) {
