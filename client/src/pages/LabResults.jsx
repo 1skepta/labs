@@ -35,7 +35,6 @@ export default function LabResultEntry() {
   const handleSelectRequest = (request) => {
     setSelectedRequest(request);
 
-    // Setup empty resultInputs structure
     const inputs = {};
     request.testIds.forEach((testId) => {
       const test = tests.find((t) => t.id === testId);
@@ -68,7 +67,7 @@ export default function LabResultEntry() {
         results: resultInputs,
       });
 
-      setMessage("Lab results saved successfully ✅");
+      setMessage("Lab results saved successfully");
       setSelectedRequest(null);
       setResultInputs({});
       fetchPaidRequests();
