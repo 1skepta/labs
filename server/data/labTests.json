@@ -24,5 +24,12 @@
         "type": "number"
       }
     ]
+  },
+  {
+    "id": 4,
+    "name": "STI Test",
+    "cost": 420,
+    "sectionId": 2,
+    "resultFields": []
   }
 ]

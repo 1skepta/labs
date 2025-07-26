@@ -7,6 +7,7 @@ import section from "../assets/sections.png";
 import test from "../assets/test.png";
 import upload from "../assets/upload.png";
 import labs from "../assets/labs.png";
+import LabTestDisplay from "../components/LabTestDisplay";
 
 const cards = [
   { title: "Create Department", icon: department, route: "/departments" },
@@ -44,6 +45,10 @@ export default function Dashboard() {
         </div>
 
         <div className="pointer-events-none absolute top-0 right-0 h-full w-12 bg-gradient-to-l from-white to-transparent" />
+      </div>
+
+      <div>
+        <LabTestDisplay />
       </div>
     </div>
   );
