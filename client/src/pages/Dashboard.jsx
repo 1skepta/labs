@@ -8,6 +8,8 @@ import test from "../assets/test.png";
 import upload from "../assets/upload.png";
 import labs from "../assets/labs.png";
 import LabTestDisplay from "../components/LabTestDisplay";
+import PatientDisplay from "../components/PatientDisplay";
+import DocumentDisplay from "../components/DocumentDisplay";
 
 const cards = [
   { title: "Create Department", icon: department, route: "/departments" },
@@ -49,6 +51,10 @@ export default function Dashboard() {
 
       <div>
         <LabTestDisplay />
+      </div>
+      <div className="md:flex">
+        <PatientDisplay />
+        <DocumentDisplay />
       </div>
     </div>
   );
