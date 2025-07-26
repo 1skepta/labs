@@ -10,6 +10,7 @@ import labs from "../assets/labs.png";
 import LabTestDisplay from "../components/LabTestDisplay";
 import PatientDisplay from "../components/PatientDisplay";
 import DocumentDisplay from "../components/DocumentDisplay";
+import LabTestChart from "../components/LabTestChart";
 
 const cards = [
   { title: "Create Department", icon: department, route: "/departments" },
@@ -49,8 +50,8 @@ export default function Dashboard() {
         <div className="pointer-events-none absolute top-0 right-0 h-full w-12 bg-gradient-to-l from-white to-transparent" />
       </div>
 
-      <div>
-        <LabTestDisplay />
+      <div className="md:flex md:items-center">
+        <LabTestChart /> <LabTestDisplay />
       </div>
       <div className="md:flex">
         <PatientDisplay />

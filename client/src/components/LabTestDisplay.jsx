@@ -18,7 +18,7 @@ export default function LabTestDisplay() {
   }, []);
 
   return (
-    <div className="p-4">
+    <div className="p-4 md:w-1/2">
       <h2 className=" mb-4 text-gray-800">Tests Available...</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {tests.slice(0, 4).map((test) => (
