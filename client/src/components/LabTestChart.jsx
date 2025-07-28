@@ -43,8 +43,8 @@ export default function LabTestChart() {
   ];
 
   return (
-    <div className="p-4 md:w-1/2">
-      <h2 className="mb-4 text-gray-800">Chart of Lab Tests</h2>
+    <div className="md:px-4 pb-10">
+      <h2 className="mb-4 text-gray-800">Lab Tests Chart</h2>
       <div className="bg-white p-4 rounded-xl shadow-sm">
         <ResponsiveContainer width="100%" height={300}>
           <BarChart

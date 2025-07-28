@@ -41,9 +41,11 @@ export default function Header() {
         </div>
 
         <div className="flex items-center space-x-6 relative">
-          <div className="flex items-center space-x-1 cursor-pointer">
-            <Bell className="w-6 h-6" />
-            <span className="hidden md:inline text-sm">Notifications</span>
+          <div className="flex items-center space-x-1 cursor-not-allowed opacity-50">
+            <Bell className="w-6 h-6 text-gray-100" />
+            <span className="hidden md:inline text-sm text-gray-100">
+              Notifications
+            </span>
           </div>
 
           <div

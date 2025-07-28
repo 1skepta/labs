@@ -11,6 +11,7 @@ import LabTestDisplay from "../components/LabTestDisplay";
 import PatientDisplay from "../components/PatientDisplay";
 import DocumentDisplay from "../components/DocumentDisplay";
 import LabTestChart from "../components/LabTestChart";
+import wow from "../assets/wow.jpeg";
 
 const cards = [
   { title: "Create Department", icon: department, route: "/departments" },
@@ -18,7 +19,7 @@ const cards = [
   { title: "Lab Test Setup", icon: labs, route: "/lab-tests" },
   { title: "Add a Patient", icon: patient, route: "/patients" },
   { title: "New Lab Request", icon: test, route: "/requests" },
-  { title: "Upload Test Results", icon: upload, route: "/upload-results" },
+  { title: "Upload Test Results", icon: upload, route: "" },
 ];
 
 export default function Dashboard() {
@@ -46,16 +47,20 @@ export default function Dashboard() {
             </div>
           ))}
         </div>
-
-        <div className="pointer-events-none absolute top-0 right-0 h-full w-12 bg-gradient-to-l from-white to-transparent" />
       </div>
 
       <div className="md:flex md:items-center">
-        <LabTestChart /> <LabTestDisplay />
+        <div className="md:w-1/2 md:p-4">
+          <img src={wow} alt="wow there" className="rounded-lg" />
+        </div>
+        <LabTestDisplay />
       </div>
       <div className="md:flex">
         <PatientDisplay />
         <DocumentDisplay />
+      </div>
+      <div>
+        <LabTestChart />
       </div>
     </div>
   );

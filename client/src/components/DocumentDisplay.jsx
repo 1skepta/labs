@@ -21,7 +21,7 @@ export default function DocumentDisplay() {
   };
 
   return (
-    <div className="bg-gray-50 flex items-center justify-center px-4 py-10 md:w-1/2">
+    <div className="bg-gray-50 flex items-center justify-center md:px-4 py-10 md:w-1/2">
       <div className="bg-white w-full max-w-3xl rounded-2xl shadow-lg p-6">
         <h1 className=" text-gray-800 mb-6">List of documents</h1>
         <input

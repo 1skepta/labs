@@ -15,7 +15,7 @@ export default function LabTestForm() {
   const [loading, setLoading] = useState(false);
   const [expandedId, setExpandedId] = useState(null);
 
-  const containerRef = useRef();
+  const itemRefs = useRef({});
 
   useEffect(() => {
     fetchSections();
@@ -24,13 +24,18 @@ export default function LabTestForm() {
 
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (containerRef.current && !containerRef.current.contains(e.target)) {
+      if (
+        expandedId !== null &&
+        itemRefs.current[expandedId] &&
+        !itemRefs.current[expandedId].contains(e.target)
+      ) {
         setExpandedId(null);
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [expandedId]);
 
   const fetchSections = async () => {
     try {
@@ -269,7 +274,7 @@ export default function LabTestForm() {
           </form>
         </div>
 
-        <div ref={containerRef}>
+        <div>
           <h2 className="text-lg font-semibold text-gray-800 mb-3">
             Existing Lab Tests
           </h2>
@@ -283,36 +288,40 @@ export default function LabTestForm() {
                 return (
                   <div
                     key={t.id}
+                    ref={(el) => (itemRefs.current[t.id] = el)}
                     className="relative w-full overflow-hidden rounded-xl"
                   >
-                    <div className="relative w-full h-full">
-                      <div
-                        className={`flex transition-transform duration-300 ${
-                          isExpanded ? "-translate-x-16" : "translate-x-0"
-                        }`}
-                        onClick={() => setExpandedId(isExpanded ? null : t.id)}
-                      >
-                        <li className="flex items-start gap-4 p-4 w-full bg-white border border-gray-200 rounded-xl shadow-sm">
-                          <img
-                            src={testIcon}
-                            alt="lab"
-                            className="w-10 h-10 object-contain"
-                          />
-                          <div className="flex-1">
-                            <p className="font-semibold text-base">{t.name}</p>
-                            <p className="text-gray-500 text-sm mt-1">
-                              ₵{parseFloat(t.cost).toFixed(2)} —{" "}
-                              <span className="italic">
-                                {getSectionName(t.sectionId)}
-                              </span>
-                            </p>
-                          </div>
-                        </li>
-                      </div>
-
+                    <div
+                      className={`flex transition-transform duration-300 w-[calc(100%+4rem)]`}
+                      style={{
+                        transform: isExpanded
+                          ? "translateX(-4rem)"
+                          : "translateX(0)",
+                      }}
+                      onClick={() => setExpandedId(isExpanded ? null : t.id)}
+                    >
+                      <li className="flex items-start gap-4 p-4 w-full bg-white border border-gray-200 rounded-xl shadow-sm cursor-pointer">
+                        <img
+                          src={testIcon}
+                          alt="lab"
+                          className="w-10 h-10 object-contain"
+                        />
+                        <div className="flex-1">
+                          <p className="font-semibold text-base">{t.name}</p>
+                          <p className="text-gray-500 text-sm mt-1">
+                            ₵{parseFloat(t.cost).toFixed(2)} —{" "}
+                            <span className="italic">
+                              {getSectionName(t.sectionId)}
+                            </span>
+                          </p>
+                        </div>
+                      </li>
                       <button
-                        onClick={() => handleDelete(t.id)}
-                        className="absolute top-0 right-0 h-full w-16 bg-red-100 text-red-600 flex items-center justify-center hover:bg-red-200 transition"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(t.id);
+                        }}
+                        className="w-16 bg-red-100 text-red-600 flex-shrink-0 flex items-center justify-center hover:bg-red-200 transition"
                       >
                         <Trash2 className="w-5 h-5" />
                       </button>

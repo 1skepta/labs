@@ -29,7 +29,7 @@ export default function PatientDisplay() {
   }, []);
 
   return (
-    <div className="bg-gray-50 flex items-center justify-center px-4 py-10 md:w-1/2">
+    <div className="bg-gray-50 flex items-center justify-center md:px-4 py-10 md:w-1/2">
       <div className="bg-white w-full max-w-2xl rounded-2xl shadow-lg p-6">
         <div className="flex items-center justify-between mb-9">
           <h2 className=" text-gray-800">Your Patients</h2>
@@ -45,7 +45,7 @@ export default function PatientDisplay() {
           <p className="text-gray-600">No patients found.</p>
         ) : (
           <ul className="space-y-4">
-            {patients.map((p) => (
+            {patients.slice(0, 3).map((p) => (
               <li key={p.id} className="flex justify-between items-start pb-3">
                 <div className="flex items-start gap-3">
                   <img
