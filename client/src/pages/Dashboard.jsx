@@ -19,7 +19,11 @@ const cards = [
   { title: "Lab Test Setup", icon: labs, route: "/lab-tests" },
   { title: "Add a Patient", icon: patient, route: "/patients" },
   { title: "New Lab Request", icon: test, route: "/requests" },
-  { title: "Upload Test Results", icon: upload, route: "" },
+  {
+    title: "Activate Test Process",
+    icon: upload,
+    route: "/activate-lab-process",
+  },
 ];
 
 export default function Dashboard() {

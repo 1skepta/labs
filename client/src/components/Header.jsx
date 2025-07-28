@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import mobile from "../assets/mobile.jpg";
 import desktop from "../assets/desktop.jpg";
 import { getUser } from "../utils/auth";
-import { Bell, UserCircle, LogOut } from "lucide-react";
+import { Bell, UserCircle, LogOut, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function Header() {
@@ -10,6 +11,7 @@ export default function Header() {
   const name = user?.name || "Guest";
   const [open, setOpen] = useState(false);
   const modalRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -35,6 +37,14 @@ export default function Header() {
       />
 
       <div className="absolute bottom-5 left-6 md:left-16 lg:left-24 right-6 flex justify-between items-center w-[calc(100%-3rem)] md:w-[calc(100%-8rem)] lg:w-[calc(100%-12rem)] text-white drop-shadow-md">
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center space-x-1 text-white hover:text-gray-200 cursor-pointer"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          <span className="hidden md:inline text-sm">Back</span>
+        </button>
+
         <div>
           <h1 className="text-3xl font-bold">Hello {name}</h1>
           <p className="text-base">Welcome To Labs</p>

@@ -13,6 +13,7 @@ import LabTestForm from "./pages/LabTestsForm";
 import AllLabRequests from "./pages/AllLabRequests";
 import LabResultEntry from "./pages/LabResults";
 import Footer from "./components/Footer";
+import LabProcessActivation from "./pages/LabProcessActivation";
 
 export default function Layout() {
   const location = useLocation();
@@ -88,6 +89,14 @@ export default function Layout() {
             element={
               <ProtectedRoute>
                 <LabResultEntry />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/activate-lab-process"
+            element={
+              <ProtectedRoute>
+                <LabProcessActivation />
               </ProtectedRoute>
             }
           />
