@@ -8,18 +8,18 @@
     ],
     "totalCost": 150,
     "isPaid": true,
-    "status": "active",
+    "status": "processing",
     "createdAt": "2025-07-23T11:19:15.516Z"
   },
   {
     "id": 2,
     "patientId": 3,
     "testIds": [
-      2
+      3
     ],
     "totalCost": 50,
     "isPaid": true,
-    "status": "active",
+    "status": "processing",
     "createdAt": "2025-07-24T09:15:30.699Z"
   },
   {
@@ -29,8 +29,8 @@
       1
     ],
     "totalCost": 100,
-    "isPaid": false,
-    "status": "pending",
+    "isPaid": true,
+    "status": "processing",
     "createdAt": "2025-07-24T10:01:34.528Z"
   },
   {
@@ -45,5 +45,16 @@
     "isPaid": false,
     "status": "pending",
     "createdAt": "2025-07-25T18:01:18.654Z"
+  },
+  {
+    "id": 5,
+    "patientId": 4,
+    "testIds": [
+      5
+    ],
+    "totalCost": 200,
+    "isPaid": true,
+    "status": "processing",
+    "createdAt": "2025-07-31T18:20:55.835Z"
   }
 ]

@@ -5,31 +5,17 @@ const reportPath = path.join(__dirname, "..", "data", "labReports.json");
 const resultsPath = path.join(__dirname, "..", "data", "labResults.json");
 const requestsPath = path.join(__dirname, "..", "data", "labRequests.json");
 
-function readReports() {
-  if (!fs.existsSync(reportPath)) fs.writeFileSync(reportPath, "[]");
-  return JSON.parse(fs.readFileSync(reportPath, "utf-8"));
+function readJSON(filepath) {
+  if (!fs.existsSync(filepath)) fs.writeFileSync(filepath, "[]");
+  return JSON.parse(fs.readFileSync(filepath, "utf-8"));
 }
 
-function writeReports(data) {
-  fs.writeFileSync(reportPath, JSON.stringify(data, null, 2));
-}
-
-function readRequests() {
-  if (!fs.existsSync(requestsPath)) fs.writeFileSync(requestsPath, "[]");
-  return JSON.parse(fs.readFileSync(requestsPath, "utf-8"));
-}
-
-function readResults() {
-  if (!fs.existsSync(resultsPath)) fs.writeFileSync(resultsPath, "[]");
-  return JSON.parse(fs.readFileSync(resultsPath, "utf-8"));
-}
-
-function writeResults(data) {
-  fs.writeFileSync(resultsPath, JSON.stringify(data, null, 2));
+function writeJSON(filepath, data) {
+  fs.writeFileSync(filepath, JSON.stringify(data, null, 2));
 }
 
 exports.getReports = (req, res) => {
-  const reports = readReports();
+  const reports = readJSON(reportPath);
   res.json(reports);
 };
 
@@ -41,8 +27,8 @@ exports.uploadReport = (req, res) => {
       .json({ message: "Request ID and file are required" });
   }
 
-  const requests = readRequests();
-  const reports = readReports();
+  const requests = readJSON(requestsPath);
+  const reports = readJSON(reportPath);
 
   const request = requests.find((r) => r.id === requestId);
   if (!request || !request.isPaid) {
@@ -58,41 +44,38 @@ exports.uploadReport = (req, res) => {
   };
 
   reports.push(newReport);
-  writeReports(reports);
+  writeJSON(reportPath, reports);
 
   res.status(201).json({ message: "Report uploaded", report: newReport });
 };
 
 exports.submitStructuredReport = (req, res) => {
-  const { requestId, testId, results } = req.body;
+  const { requestId, results } = req.body;
 
-  if (!requestId || !testId || !Array.isArray(results)) {
-    return res.status(400).json({ message: "Invalid input" });
+  if (!requestId || typeof results !== "object") {
+    return res.status(400).json({ message: "Invalid request data" });
   }
 
-  const requests = readRequests();
+  const requests = readJSON(requestsPath);
   const request = requests.find((r) => r.id === parseInt(requestId));
 
   if (!request || !request.isPaid) {
     return res.status(400).json({ message: "Invalid or unpaid request" });
   }
 
-  const allResults = readResults();
+  const allResults = readJSON(resultsPath);
 
-  const newResult = {
+  const newEntry = {
     id: allResults.length + 1,
     requestId: parseInt(requestId),
-    testId: parseInt(testId),
-    results,
+    results, // object: { testId: { field1: val1, ... }, ... }
     submittedAt: new Date().toISOString(),
   };
 
-  allResults.push(newResult);
-  writeResults(allResults);
+  allResults.push(newEntry);
+  writeJSON(resultsPath, allResults);
 
-  res
-    .status(201)
-    .json({ message: "Structured result saved", result: newResult });
+  res.status(201).json({ message: "Lab results saved", entry: newEntry });
 };
 
 exports.getStructuredResultsByRequest = (req, res) => {
@@ -101,8 +84,12 @@ exports.getStructuredResultsByRequest = (req, res) => {
     return res.status(400).json({ message: "Invalid request ID" });
   }
 
-  const allResults = readResults();
-  const results = allResults.filter((r) => r.requestId === requestId);
+  const allResults = readJSON(resultsPath);
+  const result = allResults.find((r) => r.requestId === requestId);
 
-  res.json(results);
+  if (!result) {
+    return res.status(404).json({ message: "No results found for request" });
+  }
+
+  res.json(result);
 };

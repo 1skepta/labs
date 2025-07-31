@@ -90,3 +90,25 @@ exports.markAsPaid = (req, res) => {
 
   res.json({ message: "Payment successful", request });
 };
+
+exports.startProcessing = (req, res) => {
+  const reqId = parseInt(req.params.id);
+  const requests = readRequests();
+
+  const request = requests.find((r) => r.id === reqId);
+  if (!request) {
+    return res.status(404).json({ message: "Request not found" });
+  }
+
+  if (!request.isPaid) {
+    return res
+      .status(400)
+      .json({ message: "Cannot process an unpaid request" });
+  }
+
+  request.status = "processing";
+
+  writeRequests(requests);
+
+  res.json({ message: "Request marked as processing", request });
+};

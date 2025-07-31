@@ -5,5 +5,12 @@
     "sectionId": "2",
     "role": "Admin",
     "responsibilities": "Handling Lab Executives"
+  },
+  {
+    "userId": "1753974250116",
+    "departmentId": "2",
+    "sectionId": "2",
+    "role": "Lab Technician",
+    "responsibilities": "Administer Lab Stuffs"
   }
 ]

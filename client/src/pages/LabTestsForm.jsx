@@ -178,87 +178,89 @@ export default function LabTestForm() {
               ))}
             </select>
 
-            <div className="space-y-3 mt-6">
-              <h3 className="font-semibold text-base">Define Result Fields</h3>
+            {/*
+  <div className="space-y-3 mt-6">
+    <h3 className="font-semibold text-base">Define Result Fields</h3>
 
-              {resultFields.map((field, index) => (
-                <div
-                  key={index}
-                  className="border p-4 rounded-md space-y-2 bg-white"
-                >
-                  <input
-                    type="text"
-                    placeholder="Field Label (e.g., Hemoglobin)"
-                    value={field.label}
-                    onChange={(e) =>
-                      updateField(index, "label", e.target.value)
-                    }
-                    className="w-full border rounded px-3 py-2"
-                  />
+    {resultFields.map((field, index) => (
+      <div
+        key={index}
+        className="border p-4 rounded-md space-y-2 bg-white"
+      >
+        <input
+          type="text"
+          placeholder="Field Label (e.g., Hemoglobin)"
+          value={field.label}
+          onChange={(e) =>
+            updateField(index, "label", e.target.value)
+          }
+          className="w-full border rounded px-3 py-2"
+        />
 
-                  <input
-                    type="text"
-                    placeholder="Unit (e.g., g/dL)"
-                    value={field.unit}
-                    onChange={(e) => updateField(index, "unit", e.target.value)}
-                    className="w-full border rounded px-3 py-2"
-                  />
+        <input
+          type="text"
+          placeholder="Unit (e.g., g/dL)"
+          value={field.unit}
+          onChange={(e) => updateField(index, "unit", e.target.value)}
+          className="w-full border rounded px-3 py-2"
+        />
 
-                  <input
-                    type="text"
-                    placeholder="Reference Range (e.g., 13.5 - 17.5)"
-                    value={field.referenceRange}
-                    onChange={(e) =>
-                      updateField(index, "referenceRange", e.target.value)
-                    }
-                    className="w-full border rounded px-3 py-2"
-                  />
+        <input
+          type="text"
+          placeholder="Reference Range (e.g., 13.5 - 17.5)"
+          value={field.referenceRange}
+          onChange={(e) =>
+            updateField(index, "referenceRange", e.target.value)
+          }
+          className="w-full border rounded px-3 py-2"
+        />
 
-                  <select
-                    value={field.type}
-                    onChange={(e) => updateField(index, "type", e.target.value)}
-                    className="w-full border rounded px-3 py-2"
-                  >
-                    <option value="">Select Field Type</option>
-                    <option value="number">Number</option>
-                    <option value="text">Text</option>
-                    <option value="select">Select (Dropdown)</option>
-                  </select>
+        <select
+          value={field.type}
+          onChange={(e) => updateField(index, "type", e.target.value)}
+          className="w-full border rounded px-3 py-2"
+        >
+          <option value="">Select Field Type</option>
+          <option value="number">Number</option>
+          <option value="text">Text</option>
+          <option value="select">Select (Dropdown)</option>
+        </select>
 
-                  {field.type === "select" && (
-                    <input
-                      type="text"
-                      placeholder="Options (comma separated)"
-                      value={field.options?.join(",") || ""}
-                      onChange={(e) =>
-                        updateField(
-                          index,
-                          "options",
-                          e.target.value.split(",").map((o) => o.trim())
-                        )
-                      }
-                      className="w-full border rounded px-3 py-2"
-                    />
-                  )}
+        {field.type === "select" && (
+          <input
+            type="text"
+            placeholder="Options (comma separated)"
+            value={field.options?.join(",") || ""}
+            onChange={(e) =>
+              updateField(
+                index,
+                "options",
+                e.target.value.split(",").map((o) => o.trim())
+              )
+            }
+            className="w-full border rounded px-3 py-2"
+          />
+        )}
 
-                  <button
-                    type="button"
-                    onClick={() => removeField(index)}
-                    className="text-sm text-red-500 hover:underline"
-                  >
-                    Remove Field
-                  </button>
-                </div>
-              ))}
+        <button
+          type="button"
+          onClick={() => removeField(index)}
+          className="text-sm text-red-500 hover:underline"
+        >
+          Remove Field
+        </button>
+      </div>
+    ))}
 
-              <button
-                type="button"
-                onClick={addField}
-                className="text-blue-600 text-sm hover:underline"
-              >
-                + Add Result Field
-              </button>
-            </div>
+    <button
+      type="button"
+      onClick={addField}
+      className="text-blue-600 text-sm hover:underline"
+    >
+      + Add Result Field
+    </button>
+  </div>
+  */}
 
             <button
               type="submit"

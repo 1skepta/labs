@@ -45,14 +45,14 @@ export default function AllLabRequests() {
     }
   };
 
-  const handleMarkPaid = async (id) => {
+  const handleMarkAsPaid = async (id) => {
     try {
       setLoading(true);
-      await API.patch(`/lab-requests/${id}/pay`);
+      await API.patch(`/lab-requests/${id}/pay`, { isPaid: true });
       await fetchRequests();
     } catch (err) {
-      console.error("Payment failed", err);
-      setError("Failed to update payment status.");
+      console.error("Payment update failed", err);
+      setError("Failed to mark as paid.");
     } finally {
       setLoading(false);
       setTimeout(() => setError(""), 3000);
@@ -84,7 +84,7 @@ export default function AllLabRequests() {
                 setExpandedRow((prev) => (prev === r.id ? null : r.id))
               }
             >
-              <td className="p-3 font-medium ">
+              <td className="p-3 font-medium">
                 👤 {getPatientName(r.patientId)}
               </td>
               {showPayButton && (
@@ -92,16 +92,16 @@ export default function AllLabRequests() {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleMarkPaid(r.id);
+                      handleMarkAsPaid(r.id);
                     }}
                     disabled={loading}
-                    className={`px-3 py-1 rounded text-sm text-white cursor-pointer ${
+                    className={`px-3 py-1 rounded text-sm text-white ${
                       loading
-                        ? "bg-blue-300 cursor-not-allowed"
-                        : "bg-blue-600 hover:bg-blue-700"
+                        ? "bg-green-300 cursor-pointer opacity-75"
+                        : "bg-green-600 hover:bg-green-700 cursor-pointer"
                     }`}
                   >
-                    {loading ? "Processing..." : "Mark as Paid"}
+                    {loading ? "Processing..." : "Made Payment"}
                   </button>
                 </td>
               )}
@@ -211,6 +211,14 @@ export default function AllLabRequests() {
               )}
             </motion.div>
           </AnimatePresence>
+        </div>
+        <div className="mt-6 text-center">
+          <Link
+            to="/activate-lab-process"
+            className="text-sm text-blue-600 hover:underline"
+          >
+            🔧 Activate Test →
+          </Link>
         </div>
       </div>
     </div>

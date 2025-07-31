@@ -103,6 +103,24 @@ export default function Layout() {
           />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+
+          <Route
+            path="/lab-reports/:requestId"
+            element={
+              <ProtectedRoute>
+                <LabResultEntry />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/lab-results/:requestId"
+            element={
+              <ProtectedRoute>
+                <LabResultEntry />
+              </ProtectedRoute>
+            }
+          />
+
           <Route
             path="/staff"
             element={
