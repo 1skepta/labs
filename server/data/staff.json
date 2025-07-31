@@ -1,10 +1,10 @@
 [
   {
     "userId": "1753467301965",
-    "departmentId": "2",
-    "sectionId": "2",
-    "role": "Admin",
-    "responsibilities": "Handling Lab Executives"
+    "departmentId": "1",
+    "sectionId": "1",
+    "role": "Lab Technician",
+    "responsibilities": "Makes Decisions"
   },
   {
     "userId": "1753974250116",

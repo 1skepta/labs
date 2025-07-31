@@ -8,8 +8,8 @@
       1
     ],
     "totalCost": 850,
-    "isPaid": false,
-    "status": "pending",
+    "isPaid": true,
+    "status": "processing",
     "createdAt": "2025-07-25T18:01:18.654Z"
   },
   {

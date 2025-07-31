@@ -150,11 +150,11 @@ export default function AllLabRequests() {
   return (
     <div className="min-h-screen bg-gray-100 p-4">
       <div className="max-w-screen-md mx-auto">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex justify-between mb-4">
           <h1 className="text-xl font-bold text-gray-800">Lab Requests</h1>
           <Link
             to="/requests"
-            className="text-sm text-blue-600 hover:underline"
+            className="text-sm text-blue-600 hover:underline self-start"
           >
             ← Back to Request Form
           </Link>
@@ -207,18 +207,20 @@ export default function AllLabRequests() {
               ) : paidRequests.length === 0 ? (
                 <p className="text-sm text-gray-500">No paid requests.</p>
               ) : (
-                <RequestTable data={paidRequests} showPayButton={false} />
+                <>
+                  <RequestTable data={paidRequests} showPayButton={false} />
+                  <div className="mt-6 text-center">
+                    <Link
+                      to="/activate-lab-process"
+                      className="text-sm text-blue-600 hover:underline"
+                    >
+                      🔧 Activate Test →
+                    </Link>
+                  </div>
+                </>
               )}
             </motion.div>
           </AnimatePresence>
-        </div>
-        <div className="mt-6 text-center">
-          <Link
-            to="/activate-lab-process"
-            className="text-sm text-blue-600 hover:underline"
-          >
-            🔧 Activate Test →
-          </Link>
         </div>
       </div>
     </div>

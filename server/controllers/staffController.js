@@ -22,7 +22,7 @@ exports.getAllStaff = (req, res) => {
   const users = readJsonFile(usersPath);
 
   const enriched = staff.map((s) => {
-    const user = users.find((u) => u.id === s.userId);
+    const user = users.find((u) => String(u.id) === String(s.userId));
     return {
       ...s,
       username: user?.username || "",
@@ -62,4 +62,20 @@ exports.addOrUpdateStaff = (req, res) => {
   writeJsonFile(staffPath, staff);
 
   res.json({ message: "Staff assigned successfully." });
+};
+
+// DELETE: Remove staff by userId
+exports.deleteStaff = (req, res) => {
+  const { userId } = req.params;
+  let staff = readJsonFile(staffPath);
+
+  const index = staff.findIndex((s) => s.userId === userId);
+  if (index === -1) {
+    return res.status(404).json({ message: "Staff not found." });
+  }
+
+  staff.splice(index, 1); // remove staff entry
+  writeJsonFile(staffPath, staff);
+
+  res.json({ message: "Staff deleted successfully." });
 };

@@ -102,7 +102,7 @@ export default function LabResultEntry() {
 
         <button
           type="submit"
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded cursor-pointer  "
         >
           Submit Results
         </button>
