@@ -36,21 +36,23 @@ export default function Header() {
         className="w-full h-full object-cover hidden md:block"
       />
 
-      <div className="absolute bottom-5 left-6 md:left-16 lg:left-24 right-6 flex justify-between items-center w-[calc(100%-3rem)] md:w-[calc(100%-8rem)] lg:w-[calc(100%-12rem)] text-white drop-shadow-md">
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center space-x-1 text-white hover:text-gray-200 cursor-pointer"
-        >
-          <ArrowLeft className="w-5 h-5" />
-          <span className="hidden md:inline text-sm">Back</span>
-        </button>
+      <div className="absolute bottom-5 left-6 md:left-16 lg:left-24 right-6 flex justify-between items-start md:items-center w-[calc(100%-3rem)] md:w-[calc(100%-8rem)] lg:w-[calc(100%-12rem)] text-white drop-shadow-md">
+        <div className="flex flex-col md:flex-row md:items-center md:space-x-6 space-y-2 md:space-y-0">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center space-x-1 text-white hover:text-gray-200 cursor-pointer"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            {/* <span className="hidden md:inline text-sm">Back</span> */}
+          </button>
 
-        <div>
-          <h1 className="text-3xl font-bold">Hello {name}</h1>
-          <p className="text-base">Welcome To Labs</p>
+          <div>
+            <h1 className="text-3xl font-bold">Hello {name}</h1>
+            <p className="text-base">Welcome To Labs</p>
+          </div>
         </div>
 
-        <div className="flex items-center space-x-6 relative">
+        <div className="flex items-center space-x-6 relative mt-4 md:mt-0">
           <div className="flex items-center space-x-1 cursor-not-allowed opacity-50">
             <Bell className="w-6 h-6 text-gray-100" />
             <span className="hidden md:inline text-sm text-gray-100">

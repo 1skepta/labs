@@ -13,6 +13,7 @@ const labTestRoutes = require("./routes/labTests");
 const labRequestRoutes = require("./routes/labRequests");
 const authRoutes = require("./routes/authRoutes");
 const labReportRoutes = require("./routes/labReports");
+const staffRoutes = require("./routes/staffRoutes");
 
 app.use("/api/departments", departmentRoutes);
 app.use("/api/sections", sectionRoutes);
@@ -21,12 +22,13 @@ app.use("/api/lab-tests", labTestRoutes);
 app.use("/api/lab-requests", labRequestRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/lab-reports", labReportRoutes);
+app.use("/api/staff", staffRoutes);
 
 app.get("/", (req, res) => {
   res.send("Lab Management API is running");
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5050;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

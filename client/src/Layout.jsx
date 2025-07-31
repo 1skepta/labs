@@ -14,6 +14,7 @@ import AllLabRequests from "./pages/AllLabRequests";
 import LabResultEntry from "./pages/LabResults";
 import Footer from "./components/Footer";
 import LabProcessActivation from "./pages/LabProcessActivation";
+import StaffForm from "./pages/StaffForm";
 
 export default function Layout() {
   const location = useLocation();
@@ -102,6 +103,14 @@ export default function Layout() {
           />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route
+            path="/staff"
+            element={
+              <ProtectedRoute>
+                <StaffForm />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </div>
       {!hideHeader && <Footer />}

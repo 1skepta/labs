@@ -76,3 +76,12 @@ exports.authMiddleware = (req, res, next) => {
     res.status(403).json({ message: "Invalid token" });
   }
 };
+exports.getAllUsers = (req, res) => {
+  const users = readUsers();
+  const simplified = users.map((u) => ({
+    id: u.id,
+    username: u.username,
+    name: u.name,
+  }));
+  res.json(simplified);
+};
