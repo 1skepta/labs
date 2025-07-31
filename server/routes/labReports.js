@@ -1,33 +1,15 @@
 const express = require("express");
 const router = express.Router();
-const multer = require("multer");
-const path = require("path");
+const controller = require("../controllers/labReportController");
 
-const {
-  uploadReport,
-  getReports,
-  submitStructuredReport,
-  getStructuredResultsByRequest,
-} = require("../controllers/labReportController");
+// ✅ Get all lab reports (free-text & structured)
+router.get("/", controller.getReports);
 
-// Optional file upload route
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
-  filename: function (req, file, cb) {
-    const unique = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, unique + path.extname(file.originalname));
-  },
-});
+// Save free-text report
+router.post("/free-text", controller.submitFreeTextReport);
 
-const upload = multer({ storage });
-
-router.get("/", getReports);
-router.post("/", upload.single("file"), uploadReport);
-
-// Structured report routes
-router.post("/structured", submitStructuredReport);
-router.get("/structured/:requestId", getStructuredResultsByRequest);
+// (Optional: if you use file uploads or structured submissions, add these too)
+// router.post("/upload", controller.uploadReport);
+// router.post("/structured", controller.submitStructuredReport);
 
 module.exports = router;

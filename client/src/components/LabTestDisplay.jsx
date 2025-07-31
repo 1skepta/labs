@@ -23,10 +23,10 @@ const cardData = [
     key: "reports",
     title: "Lab Reports",
     icon: FileText,
-    endpoint: null,
+    endpoint: "/lab-reports",
     bgColor: "#e6f0ff",
     iconColor: "#3fa9f5",
-    route: null,
+    route: "/reports-download",
   },
   {
     key: "tests",
@@ -51,21 +51,24 @@ const cardData = [
 export default function LabTestDisplay() {
   const [counts, setCounts] = useState({
     patients: 0,
-    reports: 3,
+    reports: 0,
     tests: 0,
     requests: 0,
   });
+
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCounts = async () => {
       for (let card of cardData) {
         if (!card.endpoint) continue;
+
         try {
           const res = await API.get(card.endpoint);
           const count = Array.isArray(res.data)
             ? res.data.length
             : res.data?.count || 0;
+
           setCounts((prev) => ({
             ...prev,
             [card.key]: count,
@@ -75,6 +78,7 @@ export default function LabTestDisplay() {
         }
       }
     };
+
     fetchCounts();
   }, []);
 

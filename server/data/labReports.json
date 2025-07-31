@@ -1,1 +1,40 @@
-[]
+[
+  {
+    "id": 1,
+    "requestId": 1,
+    "patientName": "Lawer",
+    "testName": "Blood Test",
+    "result": "Lab Results worked well \nErr is well ",
+    "submittedAt": "2025-07-31T21:09:04.907Z"
+  },
+  {
+    "id": 2,
+    "requestId": 1,
+    "patientName": "Lawer",
+    "testName": "Urine Test",
+    "result": "Results are Good",
+    "submittedAt": "2025-07-31T21:09:04.907Z"
+  },
+  {
+    "requestId": 1,
+    "results": {
+      "1": "Working ",
+      "2": "Working "
+    },
+    "submittedAt": "2025-07-31T21:17:09.786Z"
+  },
+  {
+    "requestId": 2,
+    "results": {
+      "3": "All Is Well"
+    },
+    "submittedAt": "2025-07-31T21:22:23.748Z"
+  },
+  {
+    "requestId": 3,
+    "results": {
+      "1": "How are you doing ? "
+    },
+    "submittedAt": "2025-07-31T21:29:26.689Z"
+  }
+]

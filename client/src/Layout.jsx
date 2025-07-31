@@ -15,6 +15,8 @@ import LabResultEntry from "./pages/LabResults";
 import Footer from "./components/Footer";
 import LabProcessActivation from "./pages/LabProcessActivation";
 import StaffForm from "./pages/StaffForm";
+import FreeTextReportsDownload from "./components/ReportDownload";
+import NotFound from "./pages/NotFound";
 
 export default function Layout() {
   const location = useLocation();
@@ -103,6 +105,16 @@ export default function Layout() {
           />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="*" element={<NotFound />} />
+
+          <Route
+            path="/reports-download"
+            element={
+              <ProtectedRoute>
+                <FreeTextReportsDownload />
+              </ProtectedRoute>
+            }
+          />
 
           <Route
             path="/lab-reports/:requestId"

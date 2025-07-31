@@ -1,22 +1,21 @@
 import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import API from "../utils/api";
-import { useParams } from "react-router-dom";
 
-export default function LabReportForm() {
-  const { requestId } = useParams(); 
-  const [request, setRequest] = useState(null);
+export default function LabResultEntry() {
+  const navigate = useNavigate();
+  const { requestId } = useParams();
+  const [labRequest, setLabRequest] = useState(null);
   const [tests, setTests] = useState([]);
-  const [results, setResults] = useState({});
   const [patients, setPatients] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
+  const [formData, setFormData] = useState({});
+  const [status, setStatus] = useState("");
 
   useEffect(() => {
-    fetchData();
+    fetchInitialData();
   }, []);
 
-  const fetchData = async () => {
+  const fetchInitialData = async () => {
     try {
       const [reqRes, testRes, patientRes] = await Promise.all([
         API.get(`/lab-requests/${requestId}`),
@@ -24,126 +23,95 @@ export default function LabReportForm() {
         API.get("/patients"),
       ]);
 
-      const req = reqRes.data;
-      setRequest(req);
-      setTests(
-        req.testIds
-          .map((id) => testRes.data.find((t) => t.id === id))
-          .filter(Boolean)
-      );
+      setLabRequest(reqRes.data);
+      setTests(testRes.data);
       setPatients(patientRes.data);
+
+      const initialData = {};
+      reqRes.data.testIds.forEach((testId) => {
+        initialData[testId] = "";
+      });
+      setFormData(initialData);
     } catch (err) {
-      console.error("Failed to load lab request", err);
-      setError("Failed to load lab request.");
-    } finally {
-      setLoading(false);
+      console.error("Error loading data", err);
     }
   };
 
-  const handleChange = (testId, fieldLabel, value) => {
-    setResults((prev) => ({
+  const getPatientName = (id) =>
+    patients.find((p) => p.id === id)?.name || "Unknown";
+
+  const handleChange = (testId, value) => {
+    setFormData((prev) => ({
       ...prev,
-      [testId]: {
-        ...prev[testId],
-        [fieldLabel]: value,
-      },
+      [testId]: value,
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      await API.post(`/lab-reports`, {
-        requestId,
-        results,
+      await API.post("/lab-reports/free-text", {
+        requestId: parseInt(requestId),
+        results: formData,
       });
+      navigate("/dashboard");
 
-      setMessage("Lab report submitted successfully");
-      setTimeout(() => setMessage(""), 4000);
+      setStatus("Results submitted successfully ");
     } catch (err) {
-      console.error("Failed to submit report", err);
-      setError("Failed to submit lab report.");
+      console.error("Submit error", err);
+      setStatus("Failed to submit results ❌");
     }
   };
 
-  if (loading) return <div className="p-4">Loading...</div>;
-  if (!request) return <div className="p-4 text-red-500">{error}</div>;
-
-  const patient = patients.find((p) => p.id === request.patientId);
+  if (!labRequest) return <p className="p-4">Loading...</p>;
 
   return (
-    <div className="p-4 max-w-screen-lg mx-auto">
-      <h1 className="text-2xl font-bold mb-2">Enter Lab Results</h1>
-      <p className="text-gray-600 mb-6">
-        Patient:{" "}
-        <span className="font-medium">{patient?.name || "Unknown"}</span>
-      </p>
+    <div className="max-w-3xl mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">🧾 Lab Result Entry</h1>
 
-      {message && (
-        <div className="mb-4 bg-green-100 text-green-700 px-4 py-3 rounded-md">
-          {message}
-        </div>
-      )}
-      {error && (
-        <div className="mb-4 bg-red-100 text-red-700 px-4 py-3 rounded-md">
-          {error}
-        </div>
-      )}
+      <div className="mb-4 border p-4 rounded bg-gray-50">
+        <p>
+          <strong>Patient:</strong> {getPatientName(labRequest.patientId)}
+        </p>
+        <p>
+          <strong>Total Cost:</strong> ₵{labRequest.totalCost}
+        </p>
+        <p>
+          <strong>Tests:</strong> {labRequest.testIds.length}
+        </p>
+      </div>
 
-      <form onSubmit={handleSubmit} className="space-y-8">
-        {tests.map((test) => (
-          <div key={test.id} className="border p-4 rounded-lg bg-white shadow">
-            <h2 className="text-lg font-semibold mb-2">{test.name}</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {test.resultFields?.map((field, idx) => (
-                <div key={idx} className="space-y-1">
-                  <label className="block text-sm font-medium text-gray-700">
-                    {field.label} {field.unit && `(${field.unit})`}
-                  </label>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {labRequest.testIds.map((testId) => {
+          const test = tests.find((t) => t.id === testId);
+          if (!test) return null;
 
-                  {field.type === "select" ? (
-                    <select
-                      className="w-full border rounded px-3 py-2"
-                      onChange={(e) =>
-                        handleChange(test.id, field.label, e.target.value)
-                      }
-                    >
-                      <option value="">Select</option>
-                      {field.options?.map((opt, i) => (
-                        <option key={i} value={opt}>
-                          {opt}
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
-                    <input
-                      type={field.type === "number" ? "number" : "text"}
-                      step="any"
-                      className="w-full border rounded px-3 py-2"
-                      placeholder={`Enter ${field.label}`}
-                      onChange={(e) =>
-                        handleChange(test.id, field.label, e.target.value)
-                      }
-                    />
-                  )}
-                  {field.referenceRange && (
-                    <p className="text-xs text-gray-500">
-                      Ref: {field.referenceRange}
-                    </p>
-                  )}
-                </div>
-              ))}
+          return (
+            <div key={testId} className="border p-4 rounded shadow">
+              <h2 className="text-lg font-semibold mb-2">{test.name}</h2>
+              <textarea
+                rows={5}
+                placeholder="Write the lab results for this test here..."
+                value={formData[testId]}
+                onChange={(e) => handleChange(testId, e.target.value)}
+                className="w-full border rounded px-3 py-2"
+              />
             </div>
-          </div>
-        ))}
+          );
+        })}
 
         <button
           type="submit"
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded"
         >
-          Submit Report
+          Submit Results
         </button>
+
+        {status && (
+          <div className="mt-3 text-sm text-center text-blue-700 bg-blue-50 border border-blue-200 rounded p-2">
+            {status}
+          </div>
+        )}
       </form>
     </div>
   );
