@@ -8,9 +8,9 @@
   },
   {
     "userId": "1753974250116",
-    "departmentId": "2",
+    "departmentId": "4",
     "sectionId": "2",
-    "role": "Lab Technician",
-    "responsibilities": "Administer Lab Stuffs"
+    "role": "Hospital Staff",
+    "responsibilities": "maintaining hardware"
   }
 ]
