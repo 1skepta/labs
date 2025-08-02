@@ -17,7 +17,9 @@ export default function LabProcessActivation() {
   const fetchPaidRequests = async () => {
     try {
       const res = await API.get("/lab-requests");
-      const onlyPaid = res.data.filter((req) => req.isPaid === true);
+      const onlyPaid = res.data.filter(
+        (req) => req.isPaid === true && req.status !== "completed"
+      );
       setPaidRequests(onlyPaid);
     } catch (err) {
       console.error("Error fetching paid requests", err);

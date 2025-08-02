@@ -13,12 +13,39 @@ export default function FreeTextReportsDownload() {
 
   const downloadAsPDF = (report) => {
     const doc = new jsPDF();
-    doc.setFontSize(16);
-    doc.text(`${report.patientName} - ${report.testName}`, 10, 20);
 
+    // Title
+    doc.setFontSize(18);
+    doc.setFont("helvetica", "bold");
+    doc.text("Laboratory Report", 105, 20, { align: "center" });
+
+    // Separator line
+    doc.setLineWidth(0.5);
+    doc.line(10, 25, 200, 25);
+
+    // Patient Information
     doc.setFontSize(12);
-    doc.text("Result:", 10, 35);
-    doc.text(report.result || "No result provided", 10, 45);
+    doc.setFont("helvetica", "normal");
+    doc.text(`Patient Name: ${report.patientName}`, 10, 35);
+    doc.text(`Test Name: ${report.testName}`, 10, 45);
+    doc.text(
+      `Submitted: ${new Date(report.submittedAt).toLocaleString()}`,
+      10,
+      55
+    );
+
+    // Result Section
+    doc.setFont("helvetica", "bold");
+    doc.text("Result:", 10, 70);
+    doc.setFont("helvetica", "normal");
+    doc.text(report.result || "No result provided", 10, 80, { maxWidth: 190 });
+
+    // Footer
+    doc.setFontSize(10);
+    doc.setTextColor(150);
+    doc.text("Confidential - For Medical Use Only", 105, 290, {
+      align: "center",
+    });
 
     const fileName = `${report.patientName}_${report.testName}_report.pdf`;
     doc.save(fileName.replace(/\s+/g, "_"));

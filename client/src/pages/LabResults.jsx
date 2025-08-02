@@ -54,12 +54,14 @@ export default function LabResultEntry() {
         requestId: parseInt(requestId),
         results: formData,
       });
-      navigate("/dashboard");
 
+      await API.patch(`/lab-requests/${requestId}/complete`);
+
+      navigate("/dashboard");
       setStatus("Results submitted successfully ");
     } catch (err) {
       console.error("Submit error", err);
-      setStatus("Failed to submit results ❌");
+      setStatus("Failed to submit results");
     }
   };
 

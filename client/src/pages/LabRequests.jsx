@@ -13,6 +13,7 @@ export default function LabRequestForm() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [tab, setTab] = useState("all");
 
   useEffect(() => {
     fetchPatients();
@@ -97,9 +98,21 @@ export default function LabRequestForm() {
       return test ? total + test.cost : total;
     }, 0);
 
+  const filteredRequests = requests
+    .slice()
+    .reverse()
+    .filter((r) => {
+      if (tab === "all") return true;
+      if (tab === "pending") return !r.isPaid;
+      if (tab === "paid") return r.isPaid && r.status !== "completed";
+      if (tab === "completed") return r.status === "completed";
+      return true;
+    });
+
   return (
     <div className="p-4 bg-gray-50 min-h-screen">
       <div className="max-w-screen-lg mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
+        {/* LEFT - Request Form */}
         <div>
           <h1 className="font-bold text-2xl mb-3">Lab Request Form</h1>
           <p className="text-gray-600 mb-4">Create a new lab test request.</p>
@@ -173,47 +186,71 @@ export default function LabRequestForm() {
           </form>
         </div>
 
+        {/* RIGHT - Recent Requests */}
         <div>
           <h2 className="text-lg font-semibold mb-4 text-gray-800">
             Recent Requests
           </h2>
 
-          {requests.length === 0 ? (
-            <p className="text-gray-500 text-sm">No requests yet.</p>
+          {/* Tabs */}
+          <div className="flex space-x-2 mb-4 text-sm">
+            {["all", "pending", "paid", "completed"].map((t) => (
+              <button
+                key={t}
+                onClick={() => setTab(t)}
+                className={`px-3 py-1 rounded-full border cursor-pointer ${
+                  tab === t
+                    ? "bg-blue-600 text-white border-blue-600"
+                    : "bg-white text-gray-600 border-gray-300"
+                }`}
+              >
+                {t[0].toUpperCase() + t.slice(1)}
+              </button>
+            ))}
+          </div>
+
+          {/* List */}
+          {filteredRequests.length === 0 ? (
+            <p className="text-gray-500 text-sm">
+              No requests in this category.
+            </p>
           ) : (
             <ul className="space-y-3 text-sm">
-              {requests
-                .slice(-3)
-                .reverse()
-                .map((r) => {
-                  const patient = patients.find((p) => p.id === r.patientId);
+              {filteredRequests.slice(0, 5).map((r) => {
+                const patient = patients.find((p) => p.id === r.patientId);
 
-                  return (
-                    <li
-                      key={r.id}
-                      className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm"
+                return (
+                  <li
+                    key={r.id}
+                    className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm"
+                  >
+                    <div className="font-semibold text-gray-800">
+                      👤 {patient?.name || "Unknown Patient"}
+                    </div>
+                    <div className="text-gray-600 text-sm mt-1">
+                      🧪 Tests: {r.testIds.length}
+                    </div>
+                    <div className="text-gray-600 text-sm">
+                      💰 Total: ₵{r.totalCost.toFixed(2)}
+                    </div>
+                    <div
+                      className={`inline-block mt-1 px-2 py-0.5 text-xs rounded ${
+                        r.status === "completed"
+                          ? "bg-gray-200 text-gray-700"
+                          : r.isPaid
+                          ? "bg-green-100 text-green-700"
+                          : "bg-yellow-100 text-yellow-700"
+                      }`}
                     >
-                      <div className="font-semibold text-gray-800">
-                        👤 {patient?.name || "Unknown Patient"}
-                      </div>
-                      <div className="text-gray-600 text-sm mt-1">
-                        🧪 Tests: {r.testIds.length}
-                      </div>
-                      <div className="text-gray-600 text-sm">
-                        💰 Total: ₵{r.totalCost.toFixed(2)}
-                      </div>
-                      <div
-                        className={`inline-block mt-1 px-2 py-0.5 text-xs rounded ${
-                          r.isPaid
-                            ? "bg-green-100 text-green-700"
-                            : "bg-yellow-100 text-yellow-700"
-                        }`}
-                      >
-                        {r.isPaid ? "✅ Paid" : "⏳ Pending"}
-                      </div>
-                    </li>
-                  );
-                })}
+                      {r.status === "completed"
+                        ? "✅ Completed"
+                        : r.isPaid
+                        ? "✅ Paid"
+                        : "⏳ Pending"}
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           )}
 

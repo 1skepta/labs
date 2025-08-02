@@ -20,7 +20,7 @@
     ],
     "totalCost": 200,
     "isPaid": true,
-    "status": "processing",
+    "status": "completed",
     "createdAt": "2025-07-31T18:20:55.835Z"
   }
 ]

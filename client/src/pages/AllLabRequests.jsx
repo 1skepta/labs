@@ -48,7 +48,7 @@ export default function AllLabRequests() {
   const handleMarkAsPaid = async (id) => {
     try {
       setLoading(true);
-      await API.patch(`/lab-requests/${id}/pay`, { isPaid: true });
+      await API.patch(`/lab-requests/${id}/pay`);
       await fetchRequests();
     } catch (err) {
       console.error("Payment update failed", err);
@@ -62,89 +62,98 @@ export default function AllLabRequests() {
   const getPatientName = (id) =>
     patients.find((p) => p.id === id)?.name || "Unknown";
 
-  const paidRequests = requests.filter((r) => r.isPaid);
-  const unpaidRequests = requests.filter((r) => !r.isPaid);
+  const pendingRequests = requests.filter((r) => !r.isPaid);
+  const paidRequests = requests.filter(
+    (r) => r.isPaid && r.status !== "completed"
+  );
+  const completedRequests = requests.filter((r) => r.status === "completed");
+
   const isMobile = window.innerWidth < 768;
+
+  const statusTag = (r) => {
+    if (r.status === "completed") {
+      return "✅ Completed";
+    } else if (r.status === "processing") {
+      return "⚙️ Processing";
+    } else if (r.isPaid) {
+      return "💳 Paid";
+    } else {
+      return "⏳ Pending";
+    }
+  };
+
+  const statusColor = (r) => {
+    if (r.status === "completed") return "bg-blue-100 text-blue-700";
+    if (r.status === "processing") return "bg-purple-100 text-purple-700";
+    if (r.isPaid) return "bg-green-100 text-green-700";
+    return "bg-yellow-100 text-yellow-700";
+  };
 
   const RequestTable = ({ data, showPayButton }) => (
     <table className="w-full text-sm table-auto border-collapse">
       <thead>
         <tr className="bg-gray-200 text-left">
           <th className="p-3">Patient</th>
+          <th className="p-3">Status</th>
           {showPayButton && <th className="p-3 text-right">Action</th>}
         </tr>
       </thead>
       <tbody>
         {data.map((r) => (
-          <>
-            <tr
-              key={r.id}
-              className="border-b cursor-pointer expandable-row"
-              onClick={() =>
-                setExpandedRow((prev) => (prev === r.id ? null : r.id))
-              }
-            >
-              <td className="p-3 font-medium">
-                👤 {getPatientName(r.patientId)}
-              </td>
-              {showPayButton && (
-                <td className="p-3 text-right">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleMarkAsPaid(r.id);
-                    }}
-                    disabled={loading}
-                    className={`px-3 py-1 rounded text-sm text-white ${
-                      loading
-                        ? "bg-green-300 cursor-pointer opacity-75"
-                        : "bg-green-600 hover:bg-green-700 cursor-pointer"
-                    }`}
-                  >
-                    {loading ? "Processing..." : "Made Payment"}
-                  </button>
-                </td>
-              )}
-            </tr>
-
-            <AnimatePresence>
-              {expandedRow === r.id && (
-                <motion.tr
-                  key={`expand-${r.id}`}
-                  className="bg-white text-gray-700"
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.25 }}
+          <tr
+            key={r.id}
+            className="border-b cursor-pointer expandable-row hover:bg-gray-50"
+            onClick={() =>
+              setExpandedRow((prev) => (prev === r.id ? null : r.id))
+            }
+          >
+            <td className="p-3 font-medium">
+              👤 {getPatientName(r.patientId)}
+            </td>
+            <td className="p-3">
+              <span
+                className={`inline-block px-2 py-0.5 rounded text-xs ${statusColor(
+                  r
+                )}`}
+              >
+                {statusTag(r)}
+              </span>
+            </td>
+            {showPayButton && (
+              <td className="p-3 text-right">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleMarkAsPaid(r.id);
+                  }}
+                  disabled={loading}
+                  className={`px-3 py-1 rounded text-sm text-white ${
+                    loading
+                      ? "bg-green-300 opacity-75"
+                      : "bg-green-600 hover:bg-green-700"
+                  }`}
                 >
-                  <td colSpan={showPayButton ? 2 : 1} className="p-4">
-                    <div className="space-y-1 text-sm">
-                      <div>🧪 Tests: {r.testIds.length}</div>
-                      <div>💰 Total Cost: ₵{r.totalCost.toFixed(2)}</div>
-                      <div>
-                        📅 Created: {new Date(r.createdAt).toLocaleString()}
-                      </div>
-                      <div>
-                        💳 Status:{" "}
-                        <span
-                          className={`inline-block px-2 py-0.5 rounded text-xs ${
-                            r.isPaid
-                              ? "bg-green-100 text-green-700"
-                              : "bg-yellow-100 text-yellow-700"
-                          }`}
-                        >
-                          {r.isPaid ? "Paid" : "Pending"}
-                        </span>
-                      </div>
-                    </div>
-                  </td>
-                </motion.tr>
-              )}
-            </AnimatePresence>
-          </>
+                  {loading ? "Processing..." : "Mark as Paid"}
+                </button>
+              </td>
+            )}
+          </tr>
         ))}
       </tbody>
     </table>
+  );
+
+  const TabButton = ({ label, value, color }) => (
+    <button
+      onClick={() => setActiveTab(value)}
+      className={`px-3 py-1.5 rounded text-sm font-medium cursor-pointer ${
+        activeTab === value
+          ? `${color} text-white`
+          : "bg-gray-200 text-gray-700"
+      }`}
+    >
+      {label}
+    </button>
   );
 
   return (
@@ -167,26 +176,9 @@ export default function AllLabRequests() {
         )}
 
         <div className="flex space-x-2 mb-4">
-          <button
-            onClick={() => setActiveTab("pending")}
-            className={`px-3 py-1.5 rounded text-sm font-medium cursor-pointer ${
-              activeTab === "pending"
-                ? "bg-yellow-500 text-white"
-                : "bg-gray-200 text-gray-700"
-            }`}
-          >
-            Pending
-          </button>
-          <button
-            onClick={() => setActiveTab("paid")}
-            className={`px-3 py-1.5 rounded text-sm font-medium cursor-pointer ${
-              activeTab === "paid"
-                ? "bg-green-600 text-white"
-                : "bg-gray-200 text-gray-700"
-            }`}
-          >
-            Paid
-          </button>
+          <TabButton label="Pending" value="pending" color="bg-yellow-500" />
+          <TabButton label="Paid" value="paid" color="bg-green-600" />
+          <TabButton label="Completed" value="completed" color="bg-blue-600" />
         </div>
 
         <div className="overflow-x-auto">
@@ -198,27 +190,41 @@ export default function AllLabRequests() {
               exit={{ x: isMobile ? -300 : 0, opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
-              {activeTab === "pending" ? (
-                unpaidRequests.length === 0 ? (
+              {activeTab === "pending" &&
+                (pendingRequests.length === 0 ? (
                   <p className="text-sm text-gray-500">No pending requests.</p>
                 ) : (
-                  <RequestTable data={unpaidRequests} showPayButton />
-                )
-              ) : paidRequests.length === 0 ? (
-                <p className="text-sm text-gray-500">No paid requests.</p>
-              ) : (
-                <>
-                  <RequestTable data={paidRequests} showPayButton={false} />
-                  <div className="mt-6 text-center">
-                    <Link
-                      to="/activate-lab-process"
-                      className="text-sm text-blue-600 hover:underline"
-                    >
-                      🔧 Activate Test →
-                    </Link>
-                  </div>
-                </>
-              )}
+                  <RequestTable data={pendingRequests} showPayButton />
+                ))}
+
+              {activeTab === "paid" &&
+                (paidRequests.length === 0 ? (
+                  <p className="text-sm text-gray-500">No paid requests.</p>
+                ) : (
+                  <>
+                    <RequestTable data={paidRequests} showPayButton={false} />
+                    <div className="mt-6 text-center">
+                      <Link
+                        to="/activate-lab-process"
+                        className="text-sm text-blue-600 hover:underline"
+                      >
+                        ⚙️ Activate Processing →
+                      </Link>
+                    </div>
+                  </>
+                ))}
+
+              {activeTab === "completed" &&
+                (completedRequests.length === 0 ? (
+                  <p className="text-sm text-gray-500">
+                    No completed requests.
+                  </p>
+                ) : (
+                  <RequestTable
+                    data={completedRequests}
+                    showPayButton={false}
+                  />
+                ))}
             </motion.div>
           </AnimatePresence>
         </div>

@@ -112,3 +112,25 @@ exports.startProcessing = (req, res) => {
 
   res.json({ message: "Request marked as processing", request });
 };
+
+exports.markAsCompleted = (req, res) => {
+  const reqId = parseInt(req.params.id);
+  const requests = readRequests();
+
+  const request = requests.find((r) => r.id === reqId);
+  if (!request) {
+    return res.status(404).json({ message: "Request not found" });
+  }
+
+  if (request.status !== "processing") {
+    return res
+      .status(400)
+      .json({ message: "Only processing requests can be completed" });
+  }
+
+  request.status = "completed";
+
+  writeRequests(requests);
+
+  res.json({ message: "Request marked as completed", request });
+};

@@ -15,7 +15,7 @@ import LabResultEntry from "./pages/LabResults";
 import Footer from "./components/Footer";
 import LabProcessActivation from "./pages/LabProcessActivation";
 import StaffForm from "./pages/StaffForm";
-import FreeTextReportsDownload from "./components/ReportDownload";
+import FreeTextReportsDownload from "./pages/ReportDownload";
 import NotFound from "./pages/NotFound";
 
 export default function Layout() {
