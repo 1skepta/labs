@@ -31,19 +31,5 @@
     "cost": 420,
     "sectionId": 2,
     "resultFields": []
-  },
-  {
-    "id": 5,
-    "name": "Kisses",
-    "cost": 200,
-    "sectionId": 2,
-    "resultFields": [
-      {
-        "label": "Tony",
-        "unit": "g",
-        "referenceRange": "15",
-        "type": "number"
-      }
-    ]
   }
 ]

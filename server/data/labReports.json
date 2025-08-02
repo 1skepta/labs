@@ -1,18 +1,1 @@
-[
-  {
-    "id": 1,
-    "requestId": 5,
-    "patientName": "Kiss",
-    "testName": "Kisses",
-    "result": "The Kiss Costed me my sould\n",
-    "submittedAt": "2025-08-02T15:42:38.766Z"
-  },
-  {
-    "id": 2,
-    "requestId": 5,
-    "patientName": "Kiss",
-    "testName": "Kisses",
-    "result": "All Is Well ",
-    "submittedAt": "2025-08-02T16:02:10.035Z"
-  }
-]
+[]

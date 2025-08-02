@@ -19,12 +19,5 @@
     "dob": "2001-02-01",
     "gender": "Female",
     "phone": "171"
-  },
-  {
-    "id": 4,
-    "name": "Kiss",
-    "dob": "2014-06-10",
-    "gender": "Female",
-    "phone": "191"
   }
 ]
