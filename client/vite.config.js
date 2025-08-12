@@ -1,10 +1,86 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
+import { VitePWA } from "vite-plugin-pwa";
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [tailwindcss(), react()],
+  plugins: [
+    tailwindcss(),
+    react(),
+    VitePWA({
+      registerType: "autoUpdate",
+      includeAssets: [
+        "favicon.ico",
+        "favicon.svg",
+        "robots.txt",
+        "pwa-192x192.png",
+        "pwa-512x512.png",
+        "pwa-180x180.png",
+        "apple-touch-icon.png",
+      ],
+      manifest: {
+        name: "Lab Management System",
+        short_name: "Labs",
+        description: "Manage labs, departments, and tests all from within.",
+        theme_color: "#1976d2",
+        background_color: "#ffffff",
+        display: "standalone",
+        start_url: "/", // ✅ fixed for iOS to avoid blank screen
+        scope: "/", // ✅ ensure service worker covers all routes
+        icons: [
+          {
+            src: "pwa-192x192.png",
+            sizes: "192x192",
+            type: "image/png",
+          },
+          {
+            src: "pwa-512x512.png",
+            sizes: "512x512",
+            type: "image/png",
+          },
+          {
+            src: "pwa-180x180.png",
+            sizes: "180x180",
+            type: "image/png",
+            purpose: "any maskable",
+          },
+        ],
+      },
+      workbox: {
+        globPatterns: ["**/*.{js,css,html,ico,png,svg}"],
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/your-backend-domain\.com\/.*$/,
+            handler: "NetworkFirst",
+            options: {
+              cacheName: "api-cache",
+              networkTimeoutSeconds: 10,
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 60 * 60 * 24, // 1 day
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+          {
+            urlPattern: ({ request }) =>
+              request.destination === "document" ||
+              request.destination === "script" ||
+              request.destination === "style",
+            handler: "StaleWhileRevalidate",
+            options: {
+              cacheName: "static-resources",
+            },
+          },
+        ],
+      },
+      devOptions: {
+        enabled: true, // ✅ lets you test PWA in dev mode
+      },
+    }),
+  ],
   server: {
     host: true,
     port: 5173,
