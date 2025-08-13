@@ -22,11 +22,11 @@ export default defineConfig({
         name: "Lab Management System",
         short_name: "Labs",
         description: "Manage labs, departments, and tests all from within.",
-        theme_color: "#1976d2",
+        theme_color: "#F9FAFB",
         background_color: "#ffffff",
         display: "standalone",
-        start_url: "/", // ✅ fixed for iOS to avoid blank screen
-        scope: "/", // ✅ ensure service worker covers all routes
+        start_url: "/",
+        scope: "/",
         icons: [
           {
             src: "pwa-192x192.png",
@@ -57,7 +57,7 @@ export default defineConfig({
               networkTimeoutSeconds: 10,
               expiration: {
                 maxEntries: 50,
-                maxAgeSeconds: 60 * 60 * 24, // 1 day
+                maxAgeSeconds: 60 * 60 * 24,
               },
               cacheableResponse: {
                 statuses: [0, 200],
@@ -77,7 +77,7 @@ export default defineConfig({
         ],
       },
       devOptions: {
-        enabled: true, // ✅ lets you test PWA in dev mode
+        enabled: true,
       },
     }),
   ],
