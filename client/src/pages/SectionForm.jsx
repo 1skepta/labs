@@ -150,7 +150,7 @@ export default function SectionForm() {
                     {revealedId === section.id && (
                       <button
                         onClick={() => handleDelete(section.id)}
-                        className="text-red-600 hover:text-red-800 transition z-10"
+                        className="text-red-600 hover:text-red-800 transition z-10 cursor-pointer"
                       >
                         <Trash2 size={20} />
                       </button>
