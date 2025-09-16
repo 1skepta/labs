@@ -40,7 +40,7 @@ export default function Header() {
         <div className="flex flex-col md:flex-row md:items-center md:space-x-6 space-y-2 md:space-y-0">
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center space-x-1 text-white hover:text-gray-200 cursor-pointer"
+            className="flex items-center space-x-1 text-white hover:text-gray-200 cursor-pointer hidden"
           >
             <ArrowLeft className="w-5 h-5" />
             {/* <span className="hidden md:inline text-sm">Back</span> */}
