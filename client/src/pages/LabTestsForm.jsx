@@ -323,7 +323,7 @@ export default function LabTestForm() {
                           e.stopPropagation();
                           handleDelete(t.id);
                         }}
-                        className="w-16 bg-red-100 text-red-600 flex-shrink-0 flex items-center justify-center hover:bg-red-200 transition"
+                        className="w-16 bg-red-100 text-red-600 flex-shrink-0 flex items-center justify-center hover:bg-red-200 transition cursor-pointer"
                       >
                         <Trash2 className="w-5 h-5" />
                       </button>
