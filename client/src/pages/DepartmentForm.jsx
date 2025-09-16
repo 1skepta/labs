@@ -124,7 +124,7 @@ export default function DepartmentForm() {
                     {revealedId === d.id && (
                       <button
                         onClick={() => handleDelete(d.id)}
-                        className="text-red-600 hover:text-red-800 transition z-10"
+                        className="text-red-600 hover:text-red-800 transition z-10 cursor-pointer"
                       >
                         <Trash2 size={20} />
                       </button>
