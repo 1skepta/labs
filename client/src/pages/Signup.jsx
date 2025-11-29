@@ -9,17 +9,38 @@ export default function Signup() {
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
   const [error, setError] = useState("");
+  const [isWarming, setIsWarming] = useState(true);
+  const [isServerReady, setIsServerReady] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const navigate = useNavigate();
 
+  // ---- PROACTIVE BACKEND WARM-UP ON PAGE LOAD ----
   useEffect(() => {
     localStorage.removeItem("token");
     localStorage.removeItem("name");
+
+    const warmUpBackend = async () => {
+      try {
+        await API.get("/ping", { timeout: 35000 });
+        setIsServerReady(true);
+
+        setTimeout(() => {
+          setIsWarming(false);
+        }, 2000);
+      } catch (err) {
+        setIsWarming(false);
+        setIsServerReady(false);
+      }
+    };
+
+    warmUpBackend();
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setIsSubmitting(true);
 
     const nameRegex = /^[a-zA-Z\s]{2,}$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -29,11 +50,13 @@ export default function Signup() {
       setError(
         "Please enter a valid full name (only letters and spaces, at least 2 characters)."
       );
+      setIsSubmitting(false);
       return;
     }
 
     if (!emailRegex.test(email.trim())) {
       setError("Please enter a valid email address.");
+      setIsSubmitting(false);
       return;
     }
 
@@ -41,6 +64,7 @@ export default function Signup() {
       setError(
         "Password must be at least 8 characters long and include uppercase, lowercase, and a number."
       );
+      setIsSubmitting(false);
       return;
     }
 
@@ -59,6 +83,8 @@ export default function Signup() {
       setError(
         err.response?.data?.message || "Something went wrong. Try again."
       );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -70,6 +96,28 @@ export default function Signup() {
           It only takes a minute to join
         </p>
 
+        {/* WARMING UP BANNER */}
+        {isWarming && !isServerReady && (
+          <div className="mb-4 bg-blue-50 border border-blue-200 text-blue-800 px-4 py-4 rounded-lg flex items-center gap-3">
+            <div className="animate-spin rounded-full h-5 w-5 border-2 border-blue-600 border-t-transparent"></div>
+            <div>
+              <p className="font-semibold">Warming up the server...</p>
+              <p className="text-sm text-blue-600">
+                This may take 20–30 seconds on first load
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* SERVER READY TOAST */}
+        {isWarming && isServerReady && (
+          <div className="mb-4 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg flex items-center gap-2">
+            <span className="text-xl">✅</span>
+            <p className="font-semibold">Server ready! You can now sign up.</p>
+          </div>
+        )}
+
+        {/* ERROR MESSAGE */}
         {error && (
           <div className="mb-4 bg-red-100 text-red-700 px-4 py-3 rounded">
             {error}
@@ -86,6 +134,7 @@ export default function Signup() {
               placeholder="Full name"
               className="pl-11 w-full border rounded-lg py-4 px-4 text-lg focus:outline-none focus:ring-2 focus:ring-[#0030f1]"
               required
+              disabled={isSubmitting}
             />
           </div>
 
@@ -98,6 +147,7 @@ export default function Signup() {
               placeholder="Email address"
               className="pl-11 w-full border rounded-lg py-4 px-4 text-lg focus:outline-none focus:ring-2 focus:ring-[#0030f1]"
               required
+              disabled={isSubmitting}
             />
           </div>
 
@@ -110,11 +160,13 @@ export default function Signup() {
               placeholder="Password"
               className="pl-11 pr-11 w-full border rounded-lg py-4 px-4 text-lg focus:outline-none focus:ring-2 focus:ring-[#0030f1]"
               required
+              disabled={isSubmitting}
             />
             <button
               type="button"
               onClick={() => setShowPass(!showPass)}
               className="absolute right-4 top-4 text-gray-400 hover:text-gray-600 cursor-pointer"
+              disabled={isSubmitting}
             >
               {showPass ? "🙈" : "👁️"}
             </button>
@@ -122,9 +174,17 @@ export default function Signup() {
 
           <button
             type="submit"
-            className="cursor-pointer w-full bg-[#0030f1] text-white rounded-lg py-4 text-lg font-semibold hover:bg-blue-800 transition"
+            disabled={isSubmitting}
+            className="cursor-pointer w-full bg-[#0030f1] text-white rounded-lg py-4 text-lg font-semibold hover:bg-blue-800 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            Create Account
+            {isSubmitting ? (
+              <>
+                <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                Creating Account...
+              </>
+            ) : (
+              "Create Account"
+            )}
           </button>
         </form>
 
